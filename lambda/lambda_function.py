@@ -37,7 +37,8 @@ def lambda_handler(event, context):
                     'environment': {
                         'has_keyspaces_user': bool(os.environ.get('KEYSPACES_USER')),
                         'has_keyspaces_password': bool(os.environ.get('KEYSPACES_PASSWORD')),
-                        'region': os.environ.get('AWS_REGION', 'not-set')
+                        'region': os.environ.get('AWS_REGION', 'not-set'),
+                        'aws_default_region': os.environ.get('AWS_DEFAULT_REGION', 'not-set')
                     }
                 })
             }

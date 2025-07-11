@@ -28,7 +28,7 @@ class KeyspacesConnection:
             password=os.environ.get('KEYSPACES_PASSWORD')
         )
         
-        # Configurar cluster
+        # AWS_REGION es una variable automática en Lambda
         region = os.environ.get('AWS_REGION', 'us-east-1')
         self.cluster = Cluster(
             [f"cassandra.{region}.amazonaws.com"],
