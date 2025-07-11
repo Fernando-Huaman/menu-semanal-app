@@ -18,9 +18,9 @@ class KeyspacesConnection:
         print("Conectando a Amazon Keyspaces...")
         
         # Configurar SSL
-        ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS)
-        ssl_context.check_hostname = False
-        ssl_context.verify_mode = ssl.CERT_NONE
+        ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+        ssl_context.load_verify_locations('./AmazonRootCA1.pem')
+        ssl_context.verify_mode = ssl.CERT_REQUIRED
         
         # Credenciales desde variables de entorno
         auth_provider = PlainTextAuthProvider(
