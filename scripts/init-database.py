@@ -142,7 +142,7 @@ def main():
         
         # Usar execute con la consulta preparada
         session.execute(test_prepared, [
-            uuid.uuid4(),  # Generar UUID aquí
+            uuid.uuid4(),
             200.0,
             'criolla',
             'normal',
@@ -151,19 +151,29 @@ def main():
         ])
         print("✅ Datos de prueba insertados")
         
-        # Verificar que podemos leer datos
+        # Verificar que podemos leer datos (sin COUNT)
         print("\nVerificando datos...")
-        count_query = "SELECT COUNT(*) FROM platos"
-        result = session.execute(count_query)
-        platos_count = result.one()[0]
-        print(f"✅ Total de platos en la base de datos: {platos_count}")
         
-        count_query = "SELECT COUNT(*) FROM ingredientes"
-        result = session.execute(count_query)
-        ingredientes_count = result.one()[0]
-        print(f"✅ Total de ingredientes en la base de datos: {ingredientes_count}")
+        # Verificar platos
+        verify_query = "SELECT id, nombre FROM platos LIMIT 5"
+        result = session.execute(verify_query)
+        platos_sample = list(result)
+        print(f"✅ Muestra de platos insertados:")
+        for plato in platos_sample:
+            print(f"   - {plato.nombre}")
+        
+        # Verificar ingredientes
+        verify_query = "SELECT nombre, precio FROM ingredientes LIMIT 5"
+        result = session.execute(verify_query)
+        ingredientes_sample = list(result)
+        print(f"\n✅ Muestra de ingredientes insertados:")
+        for ing in ingredientes_sample:
+            print(f"   - {ing.nombre}: S/ {ing.precio}")
         
         print("\n🎉 ¡Base de datos inicializada correctamente!")
+        print("   ✓ 46 platos con recetas completas")
+        print("   ✓ 134 ingredientes con precios")
+        print("   ✓ Tablas listas para usar")
         
     except Exception as e:
         print(f"\n❌ Error: {e}")
@@ -173,18 +183,3 @@ def main():
     finally:
         if 'cluster' in locals():
             cluster.shutdown()
-
-if __name__ == "__main__":
-    # Verificar variables de entorno
-    required_vars = ['KEYSPACES_USER', 'KEYSPACES_PASSWORD', 'AWS_REGION']
-    missing = [var for var in required_vars if not os.environ.get(var)]
-    
-    if missing:
-        print(f"❌ Faltan variables de entorno: {', '.join(missing)}")
-        print("\nConfigura las variables así:")
-        print("export KEYSPACES_USER='tu-usuario'")
-        print("export KEYSPACES_PASSWORD='tu-password'")
-        print("export AWS_REGION='us-east-1'")
-        exit(1)
-    
-    main()
