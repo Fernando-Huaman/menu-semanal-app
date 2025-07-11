@@ -62,6 +62,15 @@ const MenuDisplay = () => {
         setMenu(result.menu);
         setListaCompras(result.listaCompras);
         
+        // Debug: Ver qué días tiene el menú
+        console.log('Menú completo:', result.menu);
+        console.log('Días recibidos:', Object.keys(result.menu));
+        console.log('¿Todos los días tienen comidas?:', 
+          Object.entries(result.menu).map(([dia, comidas]) => 
+            `${dia}: ${Object.keys(comidas).length} momentos`
+          )
+        );
+  
         // Guardar en storage local
         saveMenu(result.menu, result.listaCompras, presupuesto);
         
