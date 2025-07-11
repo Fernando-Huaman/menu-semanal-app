@@ -11,6 +11,7 @@ from cassandra.auth import PlainTextAuthProvider
 from cassandra.policies import DCAwareRoundRobinPolicy
 from cassandra import ConsistencyLevel
 from datetime import datetime
+import uuid
 
 # Cargar datos
 with open('../lambda/data/platos.json', 'r', encoding='utf-8') as f:
@@ -134,15 +135,40 @@ def main():
         test_query = """
             INSERT INTO modelo_entrenamiento (id, presupuesto, tipo_comida, 
                                             categoria, platos_seleccionados, satisfaccion)
-            VALUES (uuid(), 200, 'criolla', 'normal', '[]', 85)
+            VALUES (?, ?, ?, ?, ?, ?)
         """
-        session.execute(test_query, consistency_level=ConsistencyLevel.LOCAL_QUORUM)
+        test_prepared = session.prepare(test_query)
+        test_prepared.consistency_level = ConsistencyLevel.LOCAL_QUORUM
+        
+        # Usar execute con la consulta preparada
+        session.execute(test_prepared, [
+            uuid.uuid4(),  # Generar UUID aquí
+            200.0,
+            'criolla',
+            'normal',
+            '[]',
+            85
+        ])
         print("✅ Datos de prueba insertados")
+        
+        # Verificar que podemos leer datos
+        print("\nVerificando datos...")
+        count_query = "SELECT COUNT(*) FROM platos"
+        result = session.execute(count_query)
+        platos_count = result.one()[0]
+        print(f"✅ Total de platos en la base de datos: {platos_count}")
+        
+        count_query = "SELECT COUNT(*) FROM ingredientes"
+        result = session.execute(count_query)
+        ingredientes_count = result.one()[0]
+        print(f"✅ Total de ingredientes en la base de datos: {ingredientes_count}")
         
         print("\n🎉 ¡Base de datos inicializada correctamente!")
         
     except Exception as e:
         print(f"\n❌ Error: {e}")
+        import traceback
+        traceback.print_exc()
         raise
     finally:
         if 'cluster' in locals():
