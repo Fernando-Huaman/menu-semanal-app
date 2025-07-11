@@ -72,12 +72,12 @@ class MenuMLLite:
         menu_semanal = {}
         dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
         
-        # Presupuesto y distribución
+        # Presupuesto y distribución - MODIFICADO para dar más a cena
         presupuesto_diario = presupuesto / 7
         distribucion = {
-            'desayuno': 0.25,
-            'almuerzo': 0.50,
-            'cena': 0.25
+            'desayuno': 0.20,  # Reducido de 0.25
+            'almuerzo': 0.45,  # Reducido de 0.50
+            'cena': 0.35       # Aumentado de 0.25
         }
         
         # Tracking para evitar repeticiones
@@ -116,7 +116,7 @@ class MenuMLLite:
     
     def _seleccionar_platos_ml(self, momento, presupuesto, preferencias_tipo, 
                                preferencias_categoria, platos_usados, ultimos_tipos, dia_semana):
-        """Selección de platos usando scoring ML"""
+        """Selección de platos usando scoring ML - Prioriza presupuesto sobre preferencias"""
         platos_seleccionados = {}
         
         # Definir componentes por momento
@@ -135,11 +135,37 @@ class MenuMLLite:
         for componente, porcentaje_presupuesto in componentes:
             presupuesto_componente = presupuesto * porcentaje_presupuesto
             
-            # Obtener candidatos
+            # PASO 1: Intentar con preferencias
             candidatos = self._obtener_candidatos(
                 momento, componente, presupuesto_componente,
                 preferencias_tipo, preferencias_categoria, platos_usados
             )
+            
+            # PASO 2: Si no hay candidatos, ignorar preferencias de categoría
+            if not candidatos and preferencias_categoria:
+                candidatos = self._obtener_candidatos(
+                    momento, componente, presupuesto_componente,
+                    preferencias_tipo, [], platos_usados
+                )
+            
+            # PASO 3: Si no hay candidatos, ignorar todas las preferencias
+            if not candidatos:
+                candidatos = self._obtener_candidatos(
+                    momento, componente, presupuesto_componente,
+                    [], [], platos_usados
+                )
+            
+            # PASO 4: Si es bebida y no hay candidatos, buscar la más barata
+            if not candidatos and componente == 'bebida':
+                candidatos = self._obtener_bebida_economica(momento)
+            
+            # PASO 5: Para componentes opcionales, permitir omitir
+            if not candidatos and componente == 'entrada':
+                continue  # Las entradas son opcionales
+            
+            # PASO 6: Si es fondo/principal y no hay candidatos, buscar el más barato
+            if not candidatos and componente in ['fondo', 'principal']:
+                candidatos = self._obtener_plato_economico(momento, componente)
             
             if candidatos:
                 # Calcular scores ML para cada candidato
@@ -277,7 +303,53 @@ class MenuMLLite:
             
             candidatos.append(plato)
         
+        # Si no hay candidatos y el presupuesto es muy bajo, flexibilizar
+        if not candidatos and presupuesto_max < 5:
+            # Aumentar tolerancia de presupuesto para platos muy baratos
+            for plato in self.platos_data:
+                if momento not in plato.get('momento_dia', []):
+                    continue
+                
+                if componente == 'principal':
+                    if plato['componente'] not in ['sandwich', 'fondo']:
+                        continue
+                elif plato['componente'] != componente:
+                    continue
+                
+                # Permitir hasta 20% más del presupuesto para platos muy baratos
+                if plato['precio'] * 2 <= presupuesto_max * 1.2:
+                    candidatos.append(plato)
+        
         return candidatos
+    
+    def _obtener_bebida_economica(self, momento):
+        """Obtiene la bebida más económica disponible para el momento"""
+        bebidas = []
+        for plato in self.platos_data:
+            if (plato['componente'] == 'bebida' and 
+                momento in plato.get('momento_dia', [])):
+                bebidas.append(plato)
+        
+        # Ordenar por precio y devolver las 3 más baratas
+        return sorted(bebidas, key=lambda x: x['precio'])[:3]
+    
+    def _obtener_plato_economico(self, momento, componente):
+        """Obtiene el plato más económico del componente para el momento"""
+        platos = []
+        for plato in self.platos_data:
+            if (plato['componente'] == componente and 
+                momento in plato.get('momento_dia', [])):
+                platos.append(plato)
+        
+        # Si es para desayuno y buscamos 'fondo', buscar también 'sandwich'
+        if momento == 'desayuno' and componente == 'fondo':
+            for plato in self.platos_data:
+                if (plato['componente'] == 'sandwich' and 
+                    momento in plato.get('momento_dia', [])):
+                    platos.append(plato)
+        
+        # Ordenar por precio y devolver los 5 más baratos
+        return sorted(platos, key=lambda x: x['precio'])[:5]
     
     def retroalimentar(self, menu_id, satisfaccion):
         """Actualiza el modelo con retroalimentación del usuario"""
