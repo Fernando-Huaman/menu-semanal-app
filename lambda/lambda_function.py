@@ -112,7 +112,7 @@ def generar_menu(params):
         
         # Obtener parámetros
         presupuesto = float(params.get('presupuesto', 200))
-        user_id = params.get('userId', str(uuid.uuid4()))
+        user_id = uuid.UUID(params.get('userId', str(uuid.uuid4())))
         preferencias_tipo = params.get('tipoComida', [])
         preferencias_categoria = params.get('categoria', [])
         
