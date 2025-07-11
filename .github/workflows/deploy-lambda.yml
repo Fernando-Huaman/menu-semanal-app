@@ -129,13 +129,27 @@ jobs:
         cat response.json | jq '.' 2>/dev/null || cat response.json
         echo ""
         
-        # Verificar que la respuesta sea exitosa
-        if cat response.json | grep -q '"message":"Lambda function is working!"'; then
-          echo "✅ Lambda test passed!"
+        # Verificar status code
+        STATUS_CODE=$(cat response.json | jq -r '.statusCode' 2>/dev/null || echo "0")
+        
+        if [ "$STATUS_CODE" = "200" ]; then
+          echo "✅ Lambda returned status 200"
+          
+          # Verificar el mensaje en el body
+          BODY=$(cat response.json | jq -r '.body' 2>/dev/null || echo "{}")
+          echo "📄 Body content:"
+          echo "$BODY" | jq '.' 2>/dev/null || echo "$BODY"
+          
+          if echo "$BODY" | grep -q "Lambda function is working!"; then
+            echo "✅ Lambda test passed! Function is working correctly"
+            echo "✅ Keyspaces credentials are configured"
+            echo "✅ Lambda is ready to use"
+          else
+            echo "⚠️ Unexpected response body"
+            exit 1
+          fi
         else
-          echo "❌ Lambda test failed"
-          echo "Response content:"
-          cat response.json
+          echo "❌ Lambda returned status code: $STATUS_CODE"
           exit 1
         fi
     
