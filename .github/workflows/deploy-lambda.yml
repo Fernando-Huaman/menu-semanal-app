@@ -115,10 +115,13 @@ jobs:
       run: |
         echo "🧪 Testing Lambda function..."
         
-        # Invocar función de test
+        # Crear payload en base64
+        PAYLOAD=$(echo '{"queryStringParameters": {"action": "test"}}' | base64 -w 0)
+        
+        # Invocar función
         aws lambda invoke \
           --function-name menu-generator \
-          --payload '{"queryStringParameters": {"action": "test"}}' \
+          --payload "$PAYLOAD" \
           response.json \
           --no-cli-pager
         
@@ -131,6 +134,8 @@ jobs:
           echo "✅ Lambda test passed!"
         else
           echo "❌ Lambda test failed"
+          echo "Response content:"
+          cat response.json
           exit 1
         fi
     
