@@ -1,6 +1,5 @@
 import React from 'react';
 import { IonApp, setupIonicReact } from '@ionic/react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MenuDisplay from './components/MenuDisplay';
 
 /* Core CSS required for Ionic components to work properly */
@@ -22,11 +21,7 @@ setupIonicReact();
 function App() {
   return (
     <IonApp>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<MenuDisplay />} />
-        </Routes>
-      </BrowserRouter>
+      <MenuDisplay />
     </IonApp>
   );
 }
