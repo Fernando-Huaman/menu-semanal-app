@@ -1,14 +1,84 @@
-// Servicio para comunicarse con el backend Lambda
-const API_URL = process.env.REACT_APP_API_URL || 'https://your-api.execute-api.us-east-1.amazonaws.com/prod';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 
-class MenuAPI {
-  /**
-   * Genera un nuevo menú semanal usando ML
-   */
-  async generarMenu(presupuesto, preferencias_tipo, preferencias_categoria) {
+// Mock data para desarrollo
+const mockMenu = {
+  success: true,
+  menu: {
+    Lunes: {
+      desayuno: {
+        bebida: { nombre: "Café con Leche", calorias: 120, precio: 0.93 },
+        principal: { nombre: "Pan con Palta", calorias: 280, precio: 1.18 }
+      },
+      almuerzo: {
+        bebida: { nombre: "Chicha Morada", calorias: 120, precio: 1.26 },
+        entrada: { nombre: "Causa Limeña", calorias: 420, precio: 3.44 },
+        fondo: { nombre: "Arroz con Pollo", calorias: 580, precio: 2.55 }
+      },
+      cena: {
+        bebida: { nombre: "Limonada", calorias: 80, precio: 0.64 },
+        entrada: { nombre: "Wantán Frito", calorias: 280, precio: 2.89 },
+        fondo: { nombre: "Tallarín Saltado", calorias: 720, precio: 3.29 }
+      }
+    },
+    Martes: {
+      desayuno: {
+        bebida: { nombre: "Quinua con Leche", calorias: 200, precio: 1.29 },
+        principal: { nombre: "Pan con Huevo", calorias: 320, precio: 1.86 }
+      },
+      almuerzo: {
+        bebida: { nombre: "Refresco de Maracuyá", calorias: 100, precio: 1.19 },
+        entrada: { nombre: "Papa Rellena", calorias: 350, precio: 2.62 },
+        fondo: { nombre: "Lomo Saltado", calorias: 680, precio: 7.01 }
+      },
+      cena: {
+        bebida: { nombre: "Inca Kola", calorias: 150, precio: 0.90 },
+        entrada: { nombre: "Anticuchos", calorias: 380, precio: 1.92 },
+        fondo: { nombre: "Ají de Gallina", calorias: 620, precio: 3.78 }
+      }
+    }
+  },
+  listaCompras: {
+    items: [
+      { ingrediente: "Arroz", cantidad: 1, unidad: "kg", subtotal: 3.50, categoria: "cereal" },
+      { ingrediente: "Pollo", cantidad: 0.5, unidad: "kg", subtotal: 4.25, categoria: "proteina" },
+      { ingrediente: "Papa", cantidad: 2, unidad: "kg", subtotal: 5.00, categoria: "tuberculo" },
+      { ingrediente: "Café", cantidad: 250, unidad: "g", subtotal: 5.00, categoria: "bebida" }
+    ],
+    total: 50.00,
+    categorias: {
+      cereal: [
+        { ingrediente: "Arroz", cantidad: 1, unidad: "kg", subtotal: 3.50 }
+      ],
+      proteina: [
+        { ingrediente: "Pollo", cantidad: 0.5, unidad: "kg", subtotal: 4.25 }
+      ],
+      tuberculo: [
+        { ingrediente: "Papa", cantidad: 2, unidad: "kg", subtotal: 5.00 }
+      ],
+      bebida: [
+        { ingrediente: "Café", cantidad: 250, unidad: "g", subtotal: 5.00 }
+      ]
+    }
+  },
+  presupuestoTotal: 50.00
+};
+
+export const menuService = {
+  generarMenu: async (presupuesto, tipoComida = [], categoria = []) => {
+    console.log('🔧 Generando menú:', { presupuesto, tipoComida, categoria });
+    console.log('📡 API URL:', API_URL);
+    
+    // Simular delay de red
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // Si no hay API configurada, usar mock
+    if (!API_URL || API_URL.includes('localhost') || API_URL.includes('example')) {
+      console.log('📦 Usando datos mock (API no configurada)');
+      return mockMenu;
+    }
+    
+    // Intentar llamar a la API real
     try {
-      console.log('Generando menú con:', { presupuesto, preferencias_tipo, preferencias_categoria });
-      
       const response = await fetch(`${API_URL}/menu`, {
         method: 'POST',
         headers: {
@@ -16,154 +86,44 @@ class MenuAPI {
         },
         body: JSON.stringify({
           presupuesto,
-          preferencias_tipo,
-          preferencias_categoria
+          tipoComida,
+          categoria,
+          userId: localStorage.getItem('userId') || 'default'
         })
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Error HTTP: ${response.status}`);
+        throw new Error(`Error HTTP: ${response.status}`);
       }
 
       const data = await response.json();
-      
-      if (!data.success) {
-        throw new Error(data.message || 'Error generando menú');
-      }
-      
-      // Guardar en cache local para uso offline
-      this.guardarEnCache(data);
-      
       return data;
     } catch (error) {
-      console.error('Error generando menú:', error);
-      
-      // Si falla, intentar cargar desde cache
-      const menuCacheado = this.obtenerDeCache();
-      if (menuCacheado) {
-        console.log('Usando menú desde cache offline');
-        return menuCacheado;
-      }
-      
-      throw error;
+      console.error('❌ Error llamando API:', error);
+      console.log('📦 Usando datos mock como fallback');
+      return mockMenu;
     }
-  }
+  },
 
-  /**
-   * Obtiene la lista de todos los platos disponibles
-   */
-  async obtenerPlatos() {
+  obtenerPlatos: async () => {
     try {
       const response = await fetch(`${API_URL}/platos`);
-      
-      if (!response.ok) {
-        throw new Error(`Error HTTP: ${response.status}`);
-      }
-
-      const data = await response.json();
-      
-      // Cachear platos para referencia
-      localStorage.setItem('platos_cache', JSON.stringify({
-        platos: data.platos,
-        fecha: new Date().toISOString()
-      }));
-      
-      return data;
-    } catch (error) {
-      console.error('Error obteniendo platos:', error);
-      
-      // Intentar cargar desde cache
-      const platosCache = localStorage.getItem('platos_cache');
-      if (platosCache) {
-        return JSON.parse(platosCache);
-      }
-      
-      throw error;
-    }
-  }
-
-  /**
-   * Obtiene el historial de menús de un usuario
-   */
-  async obtenerHistorial(userId) {
-    try {
-      const response = await fetch(`${API_URL}/history/${userId}`);
-      
-      if (!response.ok) {
-        throw new Error(`Error HTTP: ${response.status}`);
-      }
-
+      if (!response.ok) throw new Error('Error obteniendo platos');
       return await response.json();
     } catch (error) {
-      console.error('Error obteniendo historial:', error);
-      throw error;
+      console.error('Error:', error);
+      return { success: false, platos: [] };
     }
-  }
+  },
 
-  /**
-   * Guarda el menú en localStorage para uso offline
-   */
-  guardarEnCache(data) {
+  obtenerHistorial: async (userId) => {
     try {
-      const cacheData = {
-        menu_semanal: data.menu_semanal,
-        lista_compras: data.lista_compras,
-        presupuesto_total: data.presupuesto_total,
-        user_id: data.user_id,
-        fecha_generacion: new Date().toISOString()
-      };
-      
-      localStorage.setItem('menu_cache', JSON.stringify(cacheData));
-      
-      // Mantener historial de últimos 5 menús
-      const historial = JSON.parse(localStorage.getItem('menu_historial') || '[]');
-      historial.unshift(cacheData);
-      if (historial.length > 5) {
-        historial.pop();
-      }
-      localStorage.setItem('menu_historial', JSON.stringify(historial));
-      
+      const response = await fetch(`${API_URL}/history/${userId}`);
+      if (!response.ok) throw new Error('Error obteniendo historial');
+      return await response.json();
     } catch (error) {
-      console.error('Error guardando en cache:', error);
+      console.error('Error:', error);
+      return { success: false, historial: [] };
     }
   }
-
-  /**
-   * Obtiene el menú desde cache
-   */
-  obtenerDeCache() {
-    try {
-      const cacheData = localStorage.getItem('menu_cache');
-      if (cacheData) {
-        const data = JSON.parse(cacheData);
-        // Verificar que no sea muy antiguo (7 días)
-        const fechaCache = new Date(data.fecha_generacion);
-        const ahora = new Date();
-        const diasDiferencia = (ahora - fechaCache) / (1000 * 60 * 60 * 24);
-        
-        if (diasDiferencia < 7) {
-          return data;
-        }
-      }
-    } catch (error) {
-      console.error('Error leyendo cache:', error);
-    }
-    return null;
-  }
-
-  /**
-   * Obtiene el historial de menús guardados localmente
-   */
-  obtenerHistorialLocal() {
-    try {
-      const historial = localStorage.getItem('menu_historial');
-      return historial ? JSON.parse(historial) : [];
-    } catch (error) {
-      console.error('Error leyendo historial:', error);
-      return [];
-    }
-  }
-}
-
-export default new MenuAPI();
+};

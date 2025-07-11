@@ -1,120 +1,108 @@
-// Servicio de almacenamiento local
-class StorageService {
-  constructor() {
-    this.KEYS = {
-      MENU: 'menu_actual',
-      COMPRAS: 'estado_compras',
-      PREFERENCIAS: 'preferencias_usuario',
-      HISTORIAL: 'historial_menus'
+const STORAGE_KEYS = {
+  MENU_HISTORY: 'menu_history',
+  USER_PREFERENCES: 'user_preferences',
+  USER_ID: 'user_id'
+};
+
+// Generar o recuperar ID de usuario
+const getUserId = () => {
+  let userId = localStorage.getItem(STORAGE_KEYS.USER_ID);
+  if (!userId) {
+    userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    localStorage.setItem(STORAGE_KEYS.USER_ID, userId);
+  }
+  return userId;
+};
+
+// Guardar menú en historial
+export const saveMenu = (menu, listaCompras, presupuesto) => {
+  try {
+    const history = getMenuHistory();
+    const newEntry = {
+      id: Date.now(),
+      fecha: new Date().toISOString(),
+      menu,
+      listaCompras,
+      presupuesto,
+      userId: getUserId()
     };
-  }
-
-  /**
-   * Guarda el menú actual
-   */
-  guardarMenu(datos) {
-    try {
-      const menuData = {
-        ...datos,
-        fechaGuardado: new Date().toISOString()
-      };
-      localStorage.setItem(this.KEYS.MENU, JSON.stringify(menuData));
-      return true;
-    } catch (error) {
-      console.error('Error guardando menú:', error);
-      return false;
+    
+    // Mantener solo los últimos 10 menús
+    history.unshift(newEntry);
+    if (history.length > 10) {
+      history.pop();
     }
+    
+    localStorage.setItem(STORAGE_KEYS.MENU_HISTORY, JSON.stringify(history));
+    console.log('✅ Menú guardado en historial');
+    return true;
+  } catch (error) {
+    console.error('Error guardando menú:', error);
+    return false;
   }
+};
 
-  /**
-   * Carga el menú guardado
-   */
-  cargarMenu() {
-    try {
-      const menuStr = localStorage.getItem(this.KEYS.MENU);
-      if (menuStr) {
-        return JSON.parse(menuStr);
-      }
-    } catch (error) {
-      console.error('Error cargando menú:', error);
-    }
-    return null;
+// Obtener historial de menús
+export const getMenuHistory = () => {
+  try {
+    const history = localStorage.getItem(STORAGE_KEYS.MENU_HISTORY);
+    return history ? JSON.parse(history) : [];
+  } catch (error) {
+    console.error('Error obteniendo historial:', error);
+    return [];
   }
+};
 
-  /**
-   * Guarda el estado de items comprados
-   */
-  guardarEstadoCompras(estado) {
-    try {
-      localStorage.setItem(this.KEYS.COMPRAS, JSON.stringify(estado));
-      return true;
-    } catch (error) {
-      console.error('Error guardando estado de compras:', error);
-      return false;
-    }
+// Limpiar historial
+export const clearMenuHistory = () => {
+  try {
+    localStorage.removeItem(STORAGE_KEYS.MENU_HISTORY);
+    console.log('🗑️ Historial borrado');
+    return true;
+  } catch (error) {
+    console.error('Error borrando historial:', error);
+    return false;
   }
+};
 
-  /**
-   * Carga el estado de items comprados
-   */
-  cargarEstadoCompras() {
-    try {
-      const estadoStr = localStorage.getItem(this.KEYS.COMPRAS);
-      if (estadoStr) {
-        return JSON.parse(estadoStr);
-      }
-    } catch (error) {
-      console.error('Error cargando estado de compras:', error);
-    }
-    return {};
+// Guardar preferencias de usuario
+export const saveUserPreferences = (preferences) => {
+  try {
+    localStorage.setItem(STORAGE_KEYS.USER_PREFERENCES, JSON.stringify(preferences));
+    return true;
+  } catch (error) {
+    console.error('Error guardando preferencias:', error);
+    return false;
   }
+};
 
-  /**
-   * Guarda las preferencias del usuario
-   */
-  guardarPreferencias(preferencias) {
-    try {
-      localStorage.setItem(this.KEYS.PREFERENCIAS, JSON.stringify(preferencias));
-      return true;
-    } catch (error) {
-      console.error('Error guardando preferencias:', error);
-      return false;
-    }
-  }
-
-  /**
-   * Carga las preferencias del usuario
-   */
-  cargarPreferencias() {
-    try {
-      const prefStr = localStorage.getItem(this.KEYS.PREFERENCIAS);
-      if (prefStr) {
-        return JSON.parse(prefStr);
-      }
-    } catch (error) {
-      console.error('Error cargando preferencias:', error);
-    }
+// Obtener preferencias de usuario
+export const getUserPreferences = () => {
+  try {
+    const prefs = localStorage.getItem(STORAGE_KEYS.USER_PREFERENCES);
+    return prefs ? JSON.parse(prefs) : {
+      presupuestoDefault: 200,
+      tipoComidaDefault: [],
+      categoriaDefault: []
+    };
+  } catch (error) {
+    console.error('Error obteniendo preferencias:', error);
     return {
-      presupuesto: 200,
-      tiposComida: [],
-      categorias: []
+      presupuestoDefault: 200,
+      tipoComidaDefault: [],
+      categoriaDefault: []
     };
   }
+};
 
-  /**
-   * Limpia todos los datos guardados
-   */
-  limpiarTodo() {
-    try {
-      Object.values(this.KEYS).forEach(key => {
-        localStorage.removeItem(key);
-      });
-      return true;
-    } catch (error) {
-      console.error('Error limpiando storage:', error);
-      return false;
-    }
-  }
-}
+// Obtener último menú guardado
+export const getLastMenu = () => {
+  const history = getMenuHistory();
+  return history.length > 0 ? history[0] : null;
+};
 
-export default new StorageService();
+// Buscar menú por ID
+export const getMenuById = (id) => {
+  const history = getMenuHistory();
+  return history.find(entry => entry.id === id) || null;
+};
