@@ -1,3 +1,18 @@
+import json
+import os
+from datetime import datetime
+from decimal import Decimal
+from database import KeyspacesConnection
+from ml_model import MenuRandomForest
+from utils import (
+    calcular_lista_compras,
+    calcular_info_nutricional,
+    decimal_default
+)
+
+# Inicializar conexión global
+db = KeyspacesConnection()
+
 def lambda_handler(event, context):
     """
     Handler principal de Lambda
@@ -79,263 +94,131 @@ def lambda_handler(event, context):
             })
         }
 
-import json
-import uuid
-import os
-from datetime import datetime
-from decimal import Decimal
-from database import KeyspacesConnection
-from ml_model import MenuRandomForest
-from utils import decimal_default
-
-def lambda_handler(event, context):
-    """
-    Handler principal de Lambda
-    Maneja todas las rutas de la API
-    """
-    print(f"Event received: {json.dumps(event)}")
-    
-    # Configurar headers CORS
-    headers = {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
-    }
-    
-    # Manejar preflight CORS
-    if event.get('httpMethod') == 'OPTIONS':
-        return {
-            'statusCode': 200,
-            'headers': headers,
-            'body': ''
-        }
-    
-    try:
-        # Determinar la acción basada en la ruta
-        path = event.get('path', '')
-        method = event.get('httpMethod', '')
-        
-        # Router simple
-        if path == '/menu' and method == 'POST':
-            body = json.loads(event.get('body', '{}'))
-            response_data = generar_menu(body)
-        elif path == '/platos' and method == 'GET':
-            response_data = obtener_platos()
-        elif path.startswith('/history/') and method == 'GET':
-            user_id = path.split('/')[-1]
-            response_data = obtener_historial(user_id)
-        else:
-            response_data = {'error': 'Ruta no encontrada'}
-            
-        return {
-            'statusCode': 200,
-            'headers': headers,
-            'body': json.dumps(response_data, default=decimal_default)
-        }
-        
-    except Exception as e:
-        print(f"Error in lambda_handler: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        
-        return {
-            'statusCode': 500,
-            'headers': headers,
-            'body': json.dumps({
-                'error': 'Error interno del servidor',
-                'message': str(e)
-            })
-        }
-
 def generar_menu(params):
     """
-    Genera un menú semanal completo usando ML
+    Genera un menú semanal usando ML
+    
+    Args:
+        params: Dict con presupuesto, preferencias, etc.
+    
+    Returns:
+        Dict con el menú generado y lista de compras
     """
-    print(f"Generando menú con parámetros: {params}")
-    
-    # Parámetros del request
-    presupuesto = Decimal(str(params.get('presupuesto', 200)))
-    pref_tipo = params.get('preferencias_tipo', [])
-    pref_cat = params.get('preferencias_categoria', [])
-    
-    # Conectar a base de datos
-    db = KeyspacesConnection()
-    db.connect()
-    
     try:
+        # Conectar a la base de datos
+        if not db.session:
+            db.connect()
+        
+        # Obtener parámetros
+        presupuesto = float(params.get('presupuesto', 200))
+        user_id = params.get('userId', 'default')
+        preferencias_tipo = params.get('tipoComida', [])
+        preferencias_categoria = params.get('categoria', [])
+        
+        print(f"Generando menú para presupuesto: S/ {presupuesto}")
+        print(f"Preferencias tipo: {preferencias_tipo}")
+        print(f"Preferencias categoría: {preferencias_categoria}")
+        
         # Obtener todos los platos
         platos = db.get_all_platos()
-        print(f"Platos cargados: {len(platos)}")
+        print(f"Platos disponibles: {len(platos)}")
         
-        # Crear y usar el modelo ML
+        # Crear y entrenar modelo ML
         modelo = MenuRandomForest(platos)
+        modelo.entrenar_modelo()
+        
+        # Generar menú semanal
         menu_semanal = modelo.generar_menu_semanal(
-            float(presupuesto), 
-            pref_tipo, 
-            pref_cat
+            presupuesto=presupuesto,
+            preferencias_tipo=preferencias_tipo,
+            preferencias_categoria=preferencias_categoria
         )
         
         # Calcular lista de compras
         lista_compras = calcular_lista_compras(menu_semanal, db)
         
-        # Calcular presupuesto total real
-        presupuesto_total = sum(
-            Decimal(str(item['precio_total'])) 
-            for item in lista_compras.values()
-        )
-        
-        # Generar ID de usuario
-        user_id = uuid.uuid4()
+        # Calcular información nutricional
+        info_nutricional = calcular_info_nutricional(menu_semanal)
         
         # Guardar en base de datos
-        db.save_menu(
-            user_id,
-            presupuesto,
-            json.dumps(menu_semanal),
-            json.dumps(lista_compras, default=decimal_default)
-        )
-        
-        print(f"Menú generado exitosamente. ID: {user_id}")
+        menu_json = json.dumps(menu_semanal, default=decimal_default)
+        lista_json = json.dumps(lista_compras, default=decimal_default)
+        db.save_menu(user_id, presupuesto, menu_json, lista_json)
         
         return {
             'success': True,
-            'menu_semanal': menu_semanal,
-            'lista_compras': lista_compras,
-            'presupuesto_total': float(presupuesto_total),
-            'user_id': str(user_id)
+            'menu': menu_semanal,
+            'listaCompras': lista_compras,
+            'infoNutricional': info_nutricional,
+            'presupuestoTotal': sum(item['subtotal'] for item in lista_compras['items'])
         }
         
-    finally:
-        db.close()
-
-def calcular_lista_compras(menu_semanal, db):
-    """
-    Calcula la lista de compras consolidada para 2 personas
-    Agrupa todos los ingredientes necesarios para la semana
-    """
-    ingredientes_totales = {}
-    
-    # Recorrer todo el menú
-    for dia, momentos in menu_semanal.items():
-        for momento, platos in momentos.items():
-            for tipo_plato, plato in platos.items():
-                if plato and 'ingredientes' in plato:
-                    # Parsear ingredientes si es string JSON
-                    if isinstance(plato['ingredientes'], str):
-                        ingredientes = json.loads(plato['ingredientes'])
-                    else:
-                        ingredientes = plato['ingredientes']
-                    
-                    # Sumar cantidades (multiplicar por 2 para 2 personas)
-                    for ing in ingredientes:
-                        nombre = ing['ingrediente']
-                        cantidad = ing['cantidad'] * 2
-                        unidad = ing['unidad']
-                        
-                        if nombre not in ingredientes_totales:
-                            precio_unitario = db.get_ingrediente_precio(nombre)
-                            ingredientes_totales[nombre] = {
-                                'cantidad': 0,
-                                'unidad': unidad,
-                                'precio_unitario': float(precio_unitario),
-                                'categoria': db.get_ingrediente_categoria(nombre)
-                            }
-                        
-                        ingredientes_totales[nombre]['cantidad'] += cantidad
-    
-    # Calcular precios totales y convertir unidades
-    for nombre, datos in ingredientes_totales.items():
-        # Convertir a unidades de compra del mercado
-        cantidad_compra, unidad_compra = convertir_a_unidad_mercado(
-            datos['cantidad'],
-            datos['unidad'],
-            nombre
-        )
-        
-        datos['cantidad_compra'] = cantidad_compra
-        datos['unidad_compra'] = unidad_compra
-        
-        # Calcular precio total
-        if datos['unidad'] == 'g':
-            cantidad_kg = datos['cantidad'] / 1000
-        elif datos['unidad'] == 'ml':
-            cantidad_kg = datos['cantidad'] / 1000
-        else:
-            cantidad_kg = datos['cantidad']
-            
-        datos['precio_total'] = cantidad_kg * datos['precio_unitario']
-    
-    return ingredientes_totales
-
-def convertir_a_unidad_mercado(cantidad, unidad, ingrediente):
-    """
-    Convierte cantidades a unidades reales del mercado peruano
-    """
-    # Productos que se venden por unidad
-    if ingrediente in ['huevo', 'pan francés', 'palta', 'limón']:
-        if unidad == 'unidad':
-            return (int(cantidad), 'unidades')
-        elif unidad == 'g':
-            # Estimar unidades según el peso promedio
-            pesos = {
-                'huevo': 50,
-                'pan francés': 80,
-                'palta': 200,
-                'limón': 100
-            }
-            unidades = int(cantidad / pesos.get(ingrediente, 100)) + 1
-            return (unidades, 'unidades')
-    
-    # Productos que se venden por atado
-    if ingrediente in ['culantro', 'cebolla china', 'apio', 'huacatay']:
-        return (1, 'atado')  # Siempre 1 atado para la semana
-    
-    # Productos en kg
-    if unidad == 'g':
-        kg = cantidad / 1000
-        # Redondear a cuartos de kg
-        kg_redondeado = max(0.25, round(kg * 4) / 4)
-        return (kg_redondeado, 'kg')
-    
-    # Productos en litros
-    if unidad == 'ml':
-        litros = cantidad / 1000
-        litros_redondeado = max(0.5, round(litros * 2) / 2)
-        return (litros_redondeado, 'litro')
-    
-    return (cantidad, unidad)
+    except Exception as e:
+        print(f"Error generando menú: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return {
+            'success': False,
+            'error': str(e)
+        }
 
 def obtener_platos():
     """
-    Obtiene la lista de todos los platos disponibles
-    """
-    db = KeyspacesConnection()
-    db.connect()
+    Obtiene todos los platos disponibles
     
+    Returns:
+        Dict con lista de platos
+    """
     try:
+        if not db.session:
+            db.connect()
+        
         platos = db.get_all_platos()
+        
         return {
             'success': True,
             'platos': platos,
             'total': len(platos)
         }
-    finally:
-        db.close()
+        
+    except Exception as e:
+        print(f"Error obteniendo platos: {str(e)}")
+        return {
+            'success': False,
+            'error': str(e)
+        }
 
 def obtener_historial(user_id):
     """
     Obtiene el historial de menús de un usuario
-    """
-    db = KeyspacesConnection()
-    db.connect()
     
+    Args:
+        user_id: ID del usuario
+        
+    Returns:
+        Dict con historial de menús
+    """
     try:
+        if not db.session:
+            db.connect()
+        
         menus = db.get_user_menus(user_id)
+        
         return {
             'success': True,
-            'user_id': user_id,
-            'menus': menus
+            'historial': menus,
+            'total': len(menus)
         }
-    finally:
+        
+    except Exception as e:
+        print(f"Error obteniendo historial: {str(e)}")
+        return {
+            'success': False,
+            'error': str(e)
+        }
+
+# Mantener la conexión entre invocaciones (Lambda container reuse)
+def close_connection():
+    """Cierra la conexión a la base de datos"""
+    if db.session:
         db.close()

@@ -3,7 +3,7 @@ import os
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
 from cassandra.policies import DCAwareRoundRobinPolicy
-from cassandra import ConsistencyLevel  # Agregar esta línea
+from cassandra import ConsistencyLevel
 from datetime import datetime
 import json
 from decimal import Decimal
@@ -57,7 +57,7 @@ class KeyspacesConnection:
     def get_all_platos(self):
         """Obtiene todos los platos de la base de datos"""
         query = "SELECT * FROM platos"
-        rows = self.session.execute(query, consistency_level=ConsistencyLevel.LOCAL_QUORUM)
+        rows = self.session.execute(query)
         
         platos = []
         for row in rows:
@@ -78,22 +78,37 @@ class KeyspacesConnection:
     
     def get_ingrediente_precio(self, nombre):
         """Obtiene el precio de un ingrediente"""
-        query = "SELECT precio FROM ingredientes WHERE nombre = %s"
-        row = self.session.execute(
-            query, 
-            [nombre], 
-            consistency_level=ConsistencyLevel.LOCAL_QUORUM
-        ).one()
+        query = "SELECT precio FROM ingredientes WHERE nombre = ?"
+        prepared = self.session.prepare(query)
+        prepared.consistency_level = ConsistencyLevel.LOCAL_QUORUM
+        
+        row = self.session.execute(prepared, [nombre]).one()
         return Decimal(str(row.precio)) if row else Decimal('5.0')
+    
+    def get_ingrediente_info(self, nombre):
+        """Obtiene información completa de un ingrediente"""
+        query = "SELECT * FROM ingredientes WHERE nombre = ?"
+        prepared = self.session.prepare(query)
+        prepared.consistency_level = ConsistencyLevel.LOCAL_QUORUM
+        
+        row = self.session.execute(prepared, [nombre]).one()
+        if row:
+            return {
+                'precio': float(row.precio),
+                'unidad': row.unidad,
+                'venta_por': row.venta_por,
+                'precio_venta': float(row.precio_venta) if row.precio_venta else float(row.precio),
+                'categoria': row.categoria
+            }
+        return None
     
     def get_ingrediente_categoria(self, nombre):
         """Obtiene la categoría de un ingrediente"""
-        query = "SELECT categoria FROM ingredientes WHERE nombre = %s"
-        row = self.session.execute(
-            query, 
-            [nombre],
-            consistency_level=ConsistencyLevel.LOCAL_QUORUM
-        ).one()
+        query = "SELECT categoria FROM ingredientes WHERE nombre = ?"
+        prepared = self.session.prepare(query)
+        prepared.consistency_level = ConsistencyLevel.LOCAL_QUORUM
+        
+        row = self.session.execute(prepared, [nombre]).one()
         return row.categoria if row else 'otros'
     
     def save_menu(self, user_id, presupuesto, menu_json, lista_json):
@@ -101,14 +116,19 @@ class KeyspacesConnection:
         query = """
         INSERT INTO menus_generados 
         (user_id, fecha_generacion, presupuesto, menu_json, lista_compras)
-        VALUES (%s, %s, %s, %s, %s)
+        VALUES (?, ?, ?, ?, ?)
         """
         
-        self.session.execute(
-            query, 
-            [user_id, datetime.now(), presupuesto, menu_json, lista_json],
-            consistency_level=ConsistencyLevel.LOCAL_QUORUM
-        )
+        prepared = self.session.prepare(query)
+        prepared.consistency_level = ConsistencyLevel.LOCAL_QUORUM
+        
+        self.session.execute(prepared, [
+            user_id, 
+            datetime.now(), 
+            presupuesto, 
+            menu_json, 
+            lista_json
+        ])
         
         print(f"Menú guardado para usuario {user_id}")
     
@@ -117,15 +137,14 @@ class KeyspacesConnection:
         query = """
         SELECT fecha_generacion, presupuesto, menu_json, lista_compras 
         FROM menus_generados 
-        WHERE user_id = %s 
+        WHERE user_id = ? 
         LIMIT 10
         """
         
-        rows = self.session.execute(
-            query, 
-            [user_id],
-            consistency_level=ConsistencyLevel.LOCAL_QUORUM
-        )
+        prepared = self.session.prepare(query)
+        prepared.consistency_level = ConsistencyLevel.LOCAL_QUORUM
+        
+        rows = self.session.execute(prepared, [user_id])
         menus = []
         
         for row in rows:
@@ -137,3 +156,26 @@ class KeyspacesConnection:
             })
         
         return menus
+    
+    def get_training_data(self):
+        """Obtiene datos de entrenamiento del modelo"""
+        query = """
+        SELECT presupuesto, tipo_comida, categoria, 
+               platos_seleccionados, satisfaccion 
+        FROM modelo_entrenamiento
+        LIMIT 1000
+        """
+        
+        rows = self.session.execute(query)
+        
+        training_data = []
+        for row in rows:
+            training_data.append({
+                'presupuesto': float(row.presupuesto),
+                'tipo_comida': row.tipo_comida,
+                'categoria': row.categoria,
+                'platos_seleccionados': json.loads(row.platos_seleccionados),
+                'satisfaccion': row.satisfaccion
+            })
+        
+        return training_data
