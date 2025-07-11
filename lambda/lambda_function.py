@@ -1,3 +1,83 @@
+def lambda_handler(event, context):
+    """
+    Handler principal de Lambda
+    Maneja todas las rutas de la API
+    """
+    print(f"Event received: {json.dumps(event)}")
+    
+    # Configurar headers CORS
+    headers = {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+    }
+    
+    # Manejar preflight CORS
+    if event.get('httpMethod') == 'OPTIONS':
+        return {
+            'statusCode': 200,
+            'headers': headers,
+            'body': ''
+        }
+    
+    try:
+        # Obtener acción de query parameters
+        query_params = event.get('queryStringParameters', {}) or {}
+        action = query_params.get('action', '')
+        
+        # Test endpoint
+        if action == 'test':
+            return {
+                'statusCode': 200,
+                'headers': headers,
+                'body': json.dumps({
+                    'message': 'Lambda function is working!',
+                    'timestamp': datetime.now().isoformat(),
+                    'environment': {
+                        'has_keyspaces_user': bool(os.environ.get('KEYSPACES_USER')),
+                        'has_keyspaces_password': bool(os.environ.get('KEYSPACES_PASSWORD')),
+                        'region': os.environ.get('AWS_REGION', 'not-set')
+                    }
+                })
+            }
+        
+        # Determinar la acción basada en la ruta
+        path = event.get('path', '')
+        method = event.get('httpMethod', '')
+        
+        # Router simple
+        if path == '/menu' and method == 'POST':
+            body = json.loads(event.get('body', '{}'))
+            response_data = generar_menu(body)
+        elif path == '/platos' and method == 'GET':
+            response_data = obtener_platos()
+        elif path.startswith('/history/') and method == 'GET':
+            user_id = path.split('/')[-1]
+            response_data = obtener_historial(user_id)
+        else:
+            response_data = {'error': 'Ruta no encontrada', 'path': path, 'method': method}
+            
+        return {
+            'statusCode': 200,
+            'headers': headers,
+            'body': json.dumps(response_data, default=decimal_default)
+        }
+        
+    except Exception as e:
+        print(f"Error in lambda_handler: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        
+        return {
+            'statusCode': 500,
+            'headers': headers,
+            'body': json.dumps({
+                'error': 'Error interno del servidor',
+                'message': str(e)
+            })
+        }
+
 import json
 import uuid
 import os
