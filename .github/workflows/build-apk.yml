@@ -21,11 +21,10 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
     
     - name: Install dependencies
       run: |
-        npm ci
+        npm install
         npm install -g @capacitor/cli
     
     - name: Build React app
@@ -34,8 +33,14 @@ jobs:
       env:
         REACT_APP_API_URL: ${{ secrets.LAMBDA_API_URL }}
     
-    - name: Sync Capacitor
+    - name: Initialize Capacitor Android
       run: |
+        # Agregar Android si no existe
+        if [ ! -d "android" ]; then
+          npx cap add android
+        fi
+        
+        # Sync con Android
         npx cap sync android
     
     - name: Setup Java
@@ -47,33 +52,55 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v2
     
+    - name: Create keystore directory
+      run: |
+        mkdir -p android/app
+    
     - name: Decode Keystore
       run: |
         echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/release-keystore.jks
     
+    - name: Create gradle.properties
+      run: |
+        cd android
+        cat > gradle.properties << EOF
+        MYAPP_RELEASE_STORE_FILE=release-keystore.jks
+        MYAPP_RELEASE_KEY_ALIAS=${{ secrets.KEY_ALIAS }}
+        MYAPP_RELEASE_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
+        MYAPP_RELEASE_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
+        EOF
+    
+    - name: Configure signing in build.gradle
+      run: |
+        cd android/app
+        
+        # Agregar configuración de firma si no existe
+        if ! grep -q "signingConfigs" build.gradle; then
+          sed -i '/android {/a \
+          signingConfigs {\
+              release {\
+                  if (project.hasProperty("MYAPP_RELEASE_STORE_FILE")) {\
+                      storeFile file(MYAPP_RELEASE_STORE_FILE)\
+                      storePassword MYAPP_RELEASE_STORE_PASSWORD\
+                      keyAlias MYAPP_RELEASE_KEY_ALIAS\
+                      keyPassword MYAPP_RELEASE_KEY_PASSWORD\
+                  }\
+              }\
+          }' build.gradle
+          
+          sed -i '/buildTypes {/,/release {/s/release {/release {\
+              signingConfig signingConfigs.release/' build.gradle
+        fi
+    
     - name: Build APK
       run: |
         cd android
+        chmod +x gradlew
         ./gradlew assembleRelease
-      env:
-        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
     
     - name: Upload APK
-      uses: actions/upload-artifact@v4  # ⬅️ CAMBIAR AQUÍ DE v3 a v4
+      uses: actions/upload-artifact@v4
       with:
         name: menu-semanal-ml
         path: android/app/build/outputs/apk/release/app-release.apk
         retention-days: 30
-    
-    - name: Create Release
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: v${{ github.run_number }}
-        release_name: Release ${{ github.run_number }}
-        draft: false
-        prerelease: false
