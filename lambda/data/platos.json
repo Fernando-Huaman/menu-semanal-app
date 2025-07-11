@@ -1,0 +1,825 @@
+[
+  {
+    "id": 1,
+    "nombre": "Café Pasado",
+    "tipo": "criolla",
+    "calorias": 15,
+    "categoria": "vegetariano",
+    "componente": "bebida",
+    "momento_dia": ["desayuno"],
+    "precio": 0.57,
+    "ingredientes": [
+      {"ingrediente": "café", "cantidad": 20, "unidad": "g"},
+      {"ingrediente": "agua", "cantidad": 200, "unidad": "ml"},
+      {"ingrediente": "azúcar", "cantidad": 15, "unidad": "g"}
+    ],
+    "preparacion": "1. Hierve 200ml de agua en una olla. 2. Cuando el agua esté hirviendo, retira del fuego. 3. Agrega 20g de café molido y mezcla bien. 4. Deja reposar por 3 minutos para que se asiente. 5. Cuela el café, agrega azúcar al gusto y sirve caliente."
+  },
+  {
+    "id": 2,
+    "nombre": "Café con Leche",
+    "tipo": "criolla",
+    "calorias": 120,
+    "categoria": "vegetariano",
+    "componente": "bebida",
+    "momento_dia": ["desayuno"],
+    "precio": 0.93,
+    "ingredientes": [
+      {"ingrediente": "café", "cantidad": 15, "unidad": "g"},
+      {"ingrediente": "leche", "cantidad": 150, "unidad": "ml"},
+      {"ingrediente": "azúcar", "cantidad": 12, "unidad": "g"},
+      {"ingrediente": "agua", "cantidad": 100, "unidad": "ml"}
+    ],
+    "preparacion": "1. Hierve 100ml de agua y prepara café cargado con 15g de café molido. 2. En otra olla, calienta 150ml de leche a fuego medio sin que hierva. 3. Cuela el café preparado en una taza grande. 4. Agrega la leche caliente lentamente al café. 5. Endulza con azúcar, mezcla bien y sirve inmediatamente."
+  },
+  {
+    "id": 3,
+    "nombre": "Emoliente",
+    "tipo": "criolla",
+    "calorias": 80,
+    "categoria": "vegetariano",
+    "componente": "bebida",
+    "momento_dia": ["desayuno"],
+    "precio": 0.85,
+    "ingredientes": [
+      {"ingrediente": "linaza", "cantidad": 10, "unidad": "g"},
+      {"ingrediente": "cola de caballo", "cantidad": 5, "unidad": "g"},
+      {"ingrediente": "miel", "cantidad": 15, "unidad": "g"},
+      {"ingrediente": "limón", "cantidad": 20, "unidad": "g"},
+      {"ingrediente": "agua", "cantidad": 250, "unidad": "ml"}
+    ],
+    "preparacion": "1. Hierve 250ml de agua en una olla mediana. 2. Agrega la linaza y cola de caballo al agua hirviendo. 3. Deja hervir por 5 minutos a fuego medio. 4. Retira del fuego y cuela la preparación. 5. Agrega miel y jugo de limón, mezcla bien y sirve caliente."
+  },
+  {
+    "id": 4,
+    "nombre": "Quinua con Leche",
+    "tipo": "andina",
+    "calorias": 200,
+    "categoria": "vegetariano",
+    "componente": "bebida",
+    "momento_dia": ["desayuno"],
+    "precio": 1.29,
+    "ingredientes": [
+      {"ingrediente": "quinua", "cantidad": 40, "unidad": "g"},
+      {"ingrediente": "leche", "cantidad": 200, "unidad": "ml"},
+      {"ingrediente": "azúcar", "cantidad": 25, "unidad": "g"},
+      {"ingrediente": "canela", "cantidad": 2, "unidad": "g"}
+    ],
+    "preparacion": "1. Lava la quinua con agua fría hasta que el agua salga clara. 2. Hierve la quinua en agua por 15 minutos hasta que esté suave. 3. Escurre y reserva la quinua cocida. 4. Calienta la leche con canela y azúcar. 5. Agrega la quinua a la leche caliente y sirve."
+  },
+  {
+    "id": 5,
+    "nombre": "Chocolate Caliente Arequipeño",
+    "tipo": "andina",
+    "calorias": 180,
+    "categoria": "vegetariano",
+    "componente": "bebida",
+    "momento_dia": ["desayuno"],
+    "precio": 1.53,
+    "ingredientes": [
+      {"ingrediente": "chocolate", "cantidad": 30, "unidad": "g"},
+      {"ingrediente": "leche", "cantidad": 200, "unidad": "ml"},
+      {"ingrediente": "azúcar", "cantidad": 20, "unidad": "g"},
+      {"ingrediente": "canela", "cantidad": 2, "unidad": "g"}
+    ],
+    "preparacion": "1. Calienta la leche en una olla a fuego medio. 2. Ralla o pica finamente el chocolate. 3. Cuando la leche esté caliente, agrega el chocolate y revuelve. 4. Endulza con azúcar y agrega canela. 5. Bate vigorosamente hasta que esté espumoso y sirve."
+  },
+  {
+    "id": 6,
+    "nombre": "Chicha Morada",
+    "tipo": "criolla",
+    "calorias": 120,
+    "categoria": "vegetariano",
+    "componente": "bebida",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 1.26,
+    "ingredientes": [
+      {"ingrediente": "maíz morado", "cantidad": 100, "unidad": "g"},
+      {"ingrediente": "piña", "cantidad": 50, "unidad": "g"},
+      {"ingrediente": "canela", "cantidad": 3, "unidad": "g"},
+      {"ingrediente": "azúcar", "cantidad": 30, "unidad": "g"},
+      {"ingrediente": "agua", "cantidad": 500, "unidad": "ml"}
+    ],
+    "preparacion": "1. Hierve 500ml de agua en una olla grande. 2. Agrega el maíz morado y canela, hierve por 20 minutos. 3. Agrega los trozos de piña y hierve 10 minutos más. 4. Retira del fuego y cuela toda la preparación. 5. Endulza con azúcar, mezcla bien y sirve frío."
+  },
+  {
+    "id": 7,
+    "nombre": "Limonada",
+    "tipo": "criolla",
+    "calorias": 80,
+    "categoria": "vegetariano",
+    "componente": "bebida",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 0.64,
+    "ingredientes": [
+      {"ingrediente": "limón", "cantidad": 60, "unidad": "g"},
+      {"ingrediente": "agua", "cantidad": 250, "unidad": "ml"},
+      {"ingrediente": "azúcar", "cantidad": 25, "unidad": "g"},
+      {"ingrediente": "hielo", "cantidad": 50, "unidad": "g"}
+    ],
+    "preparacion": "1. Exprime 3-4 limones hasta obtener 60ml de jugo. 2. En una jarra, disuelve el azúcar en un poco de agua tibia. 3. Agrega el jugo de limón y mezcla bien. 4. Completa con agua fría hasta 250ml. 5. Sirve con hielo y mezcla antes de tomar."
+  },
+  {
+    "id": 8,
+    "nombre": "Refresco de Maracuyá",
+    "tipo": "selvatica",
+    "calorias": 100,
+    "categoria": "vegetariano",
+    "componente": "bebida",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 1.19,
+    "ingredientes": [
+      {"ingrediente": "maracuyá", "cantidad": 80, "unidad": "g"},
+      {"ingrediente": "agua", "cantidad": 250, "unidad": "ml"},
+      {"ingrediente": "azúcar", "cantidad": 30, "unidad": "g"},
+      {"ingrediente": "hielo", "cantidad": 50, "unidad": "g"}
+    ],
+    "preparacion": "1. Extrae la pulpa de 3-4 maracuyás maduros. 2. Licua la pulpa con un poco de agua. 3. Cuela para separar las semillas. 4. Mezcla con el resto del agua y azúcar hasta disolver. 5. Sirve con hielo y mezcla antes de tomar."
+  },
+  {
+    "id": 9,
+    "nombre": "Chicha de Jora",
+    "tipo": "andina",
+    "calorias": 140,
+    "categoria": "vegetariano",
+    "componente": "bebida",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 1.16,
+    "ingredientes": [
+      {"ingrediente": "jora", "cantidad": 80, "unidad": "g"},
+      {"ingrediente": "agua", "cantidad": 400, "unidad": "ml"},
+      {"ingrediente": "azúcar", "cantidad": 25, "unidad": "g"},
+      {"ingrediente": "canela", "cantidad": 2, "unidad": "g"}
+    ],
+    "preparacion": "1. Hierve la jora en agua por 30 minutos. 2. Cuela el líquido y desecha los sólidos. 3. Agrega canela y deja enfriar. 4. Endulza con azúcar al gusto. 5. Sirve frío y mezcla antes de tomar."
+  },
+  {
+    "id": 10,
+    "nombre": "Inca Kola",
+    "tipo": "criolla",
+    "calorias": 150,
+    "categoria": "vegetariano",
+    "componente": "bebida",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 0.90,
+    "ingredientes": [
+      {"ingrediente": "gaseosa", "cantidad": 300, "unidad": "ml"},
+      {"ingrediente": "hielo", "cantidad": 30, "unidad": "g"}
+    ],
+    "preparacion": "1. Saca la gaseosa de la refrigeradora. 2. Sirve en un vaso alto. 3. Agrega cubitos de hielo al gusto. 4. Mezcla suavemente. 5. Sirve inmediatamente bien fría."
+  },
+  {
+    "id": 12,
+    "nombre": "Pan con Palta",
+    "tipo": "criolla",
+    "calorias": 280,
+    "categoria": "vegetariano",
+    "componente": "sandwich",
+    "momento_dia": ["desayuno"],
+    "precio": 1.18,
+    "ingredientes": [
+      {"ingrediente": "pan francés", "cantidad": 80, "unidad": "g"},
+      {"ingrediente": "palta", "cantidad": 60, "unidad": "g"},
+      {"ingrediente": "sal", "cantidad": 2, "unidad": "g"},
+      {"ingrediente": "limón", "cantidad": 10, "unidad": "g"},
+      {"ingrediente": "tomate", "cantidad": 40, "unidad": "g"}
+    ],
+    "preparacion": "1. Corta el pan francés por la mitad a lo largo. 2. Pela y machaca la palta en un bowl con un tenedor. 3. Agrega sal y unas gotas de limón a la palta, mezcla bien. 4. Unta la palta en ambas mitades del pan. 5. Corta el tomate en rodajas y colócalas sobre la palta, sirve inmediatamente."
+  },
+  {
+    "id": 13,
+    "nombre": "Pan con Huevo",
+    "tipo": "criolla",
+    "calorias": 320,
+    "categoria": "vegetariano",
+    "componente": "sandwich",
+    "momento_dia": ["desayuno"],
+    "precio": 1.86,
+    "ingredientes": [
+      {"ingrediente": "pan francés", "cantidad": 80, "unidad": "g"},
+      {"ingrediente": "huevo", "cantidad": 2, "unidad": "unidad"},
+      {"ingrediente": "mantequilla", "cantidad": 10, "unidad": "g"},
+      {"ingrediente": "sal", "cantidad": 2, "unidad": "g"},
+      {"ingrediente": "aceite", "cantidad": 5, "unidad": "ml"}
+    ],
+    "preparacion": "1. Corta el pan por la mitad y tuesta ligeramente. 2. Unta mantequilla en el pan tostado. 3. Calienta aceite en una sartén a fuego medio. 4. Rompe los huevos en la sartén, agrega sal y fríe hasta que estén a tu gusto. 5. Coloca los huevos fritos sobre el pan y sirve caliente."
+  },
+  {
+    "id": 14,
+    "nombre": "Pan con Jamón y Queso",
+    "tipo": "criolla",
+    "calorias": 380,
+    "categoria": "normal",
+    "componente": "sandwich",
+    "momento_dia": ["desayuno"],
+    "precio": 2.47,
+    "ingredientes": [
+      {"ingrediente": "pan francés", "cantidad": 80, "unidad": "g"},
+      {"ingrediente": "jamón", "cantidad": 40, "unidad": "g"},
+      {"ingrediente": "queso", "cantidad": 30, "unidad": "g"},
+      {"ingrediente": "mantequilla", "cantidad": 8, "unidad": "g"},
+      {"ingrediente": "tomate", "cantidad": 30, "unidad": "g"}
+    ],
+    "preparacion": "1. Corta el pan francés por la mitad horizontalmente. 2. Unta mantequilla en ambas mitades del pan. 3. Coloca las lonchas de jamón sobre una mitad. 4. Agrega el queso y rodajas de tomate. 5. Cierra el sandwich y sirve inmediatamente."
+  },
+  {
+    "id": 15,
+    "nombre": "Pan con Chicharrón",
+    "tipo": "criolla",
+    "calorias": 450,
+    "categoria": "normal",
+    "componente": "sandwich",
+    "momento_dia": ["desayuno"],
+    "precio": 2.49,
+    "ingredientes": [
+      {"ingrediente": "pan francés", "cantidad": 100, "unidad": "g"},
+      {"ingrediente": "chicharrón", "cantidad": 80, "unidad": "g"},
+      {"ingrediente": "camote", "cantidad": 60, "unidad": "g"},
+      {"ingrediente": "cebolla", "cantidad": 30, "unidad": "g"},
+      {"ingrediente": "ají limo", "cantidad": 5, "unidad": "g"}
+    ],
+    "preparacion": "1. Calienta el chicharrón en una sartén hasta que esté crujiente. 2. Hierve el camote hasta que esté suave, corta en rodajas. 3. Corta la cebolla en juliana fina. 4. Abre el pan y coloca el chicharrón caliente. 5. Agrega camote, cebolla y ají limo al gusto."
+  },
+  {
+    "id": 16,
+    "nombre": "Tamal",
+    "tipo": "criolla",
+    "calorias": 420,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["desayuno"],
+    "precio": 3.85,
+    "ingredientes": [
+      {"ingrediente": "masa de maíz", "cantidad": 100, "unidad": "g"},
+      {"ingrediente": "cerdo", "cantidad": 60, "unidad": "g"},
+      {"ingrediente": "ají panca", "cantidad": 10, "unidad": "g"},
+      {"ingrediente": "manteca", "cantidad": 20, "unidad": "g"},
+      {"ingrediente": "hojas de plátano", "cantidad": 2, "unidad": "g"}
+    ],
+    "preparacion": "1. Prepara la masa mezclando harina con manteca y sal. 2. Marina el cerdo con ají panca molido. 3. Extiende la masa sobre la hoja de plátano. 4. Coloca el cerdo marinado en el centro. 5. Envuelve bien y cocina al vapor por 45 minutos."
+  },
+  {
+    "id": 17,
+    "nombre": "Empanada de Carne",
+    "tipo": "criolla",
+    "calorias": 350,
+    "categoria": "normal",
+    "componente": "entrada",
+    "momento_dia": ["desayuno", "almuerzo", "cena"],
+    "precio": 2.12,
+    "ingredientes": [
+      {"ingrediente": "harina", "cantidad": 80, "unidad": "g"},
+      {"ingrediente": "carne molida", "cantidad": 60, "unidad": "g"},
+      {"ingrediente": "cebolla", "cantidad": 30, "unidad": "g"},
+      {"ingrediente": "aceitunas", "cantidad": 10, "unidad": "g"},
+      {"ingrediente": "aceite", "cantidad": 40, "unidad": "ml"}
+    ],
+    "preparacion": "1. Prepara la masa con harina, agua y sal. 2. Sofríe la carne con cebolla picada. 3. Agrega aceitunas picadas al relleno. 4. Forma círculos con la masa y rellena. 5. Cierra en forma de media luna y fríe en aceite caliente."
+  },
+  {
+    "id": 18,
+    "nombre": "Chicharrón de Pescado",
+    "tipo": "marina",
+    "calorias": 380,
+    "categoria": "normal",
+    "componente": "entrada",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 2.85,
+    "ingredientes": [
+      {"ingrediente": "pescado", "cantidad": 120, "unidad": "g"},
+      {"ingrediente": "harina", "cantidad": 30, "unidad": "g"},
+      {"ingrediente": "limón", "cantidad": 20, "unidad": "g"},
+      {"ingrediente": "aceite", "cantidad": 50, "unidad": "ml"},
+      {"ingrediente": "ajo", "cantidad": 5, "unidad": "g"}
+    ],
+    "preparacion": "1. Corta el pescado en trozos medianos. 2. Marina con limón, ajo y sal por 20 minutos. 3. Pasa los trozos por harina. 4. Fríe en aceite bien caliente hasta dorar. 5. Sirve con salsa criolla y limón."
+  },
+  {
+    "id": 19,
+    "nombre": "Wantán Frito",
+    "tipo": "china",
+    "calorias": 280,
+    "categoria": "normal",
+    "componente": "entrada",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 2.89,
+    "ingredientes": [
+      {"ingrediente": "masa wantán", "cantidad": 100, "unidad": "g"},
+      {"ingrediente": "carne molida", "cantidad": 80, "unidad": "g"},
+      {"ingrediente": "cebolla china", "cantidad": 20, "unidad": "g"},
+      {"ingrediente": "aceite", "cantidad": 50, "unidad": "ml"},
+      {"ingrediente": "ajo", "cantidad": 5, "unidad": "g"}
+    ],
+    "preparacion": "1. Pica finamente la cebolla china y el ajo. 2. Sofríe la carne molida con ajo y cebolla china hasta dorar. 3. Coloca una cucharadita de relleno en cada masa wantán. 4. Dobla las masas formando triángulos y sella los bordes con agua. 5. Fríe en aceite caliente hasta que estén dorados y crujientes."
+  },
+  {
+    "id": 20,
+    "nombre": "Sopa Wantán",
+    "tipo": "china",
+    "calorias": 220,
+    "categoria": "normal",
+    "componente": "entrada",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 2.16,
+    "ingredientes": [
+      {"ingrediente": "masa wantán", "cantidad": 80, "unidad": "g"},
+      {"ingrediente": "carne molida", "cantidad": 50, "unidad": "g"},
+      {"ingrediente": "caldo de pollo", "cantidad": 300, "unidad": "ml"},
+      {"ingrediente": "cebolla china", "cantidad": 15, "unidad": "g"},
+      {"ingrediente": "apio", "cantidad": 20, "unidad": "g"}
+    ],
+    "preparacion": "1. Rellena las masas wantán con pequeñas porciones de carne molida. 2. Cierra bien los bordes con agua. 3. Hierve el caldo de pollo en una olla. 4. Agrega los wantán al caldo hirviendo por 5 minutos. 5. Sirve caliente decorado con cebolla china y apio picados."
+  },
+  {
+    "id": 21,
+    "nombre": "Yuquitas Rellenas",
+    "tipo": "criolla",
+    "calorias": 360,
+    "categoria": "normal",
+    "componente": "entrada",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 2.95,
+    "ingredientes": [
+      {"ingrediente": "yuca", "cantidad": 150, "unidad": "g"},
+      {"ingrediente": "queso", "cantidad": 40, "unidad": "g"},
+      {"ingrediente": "huevo", "cantidad": 1, "unidad": "unidad"},
+      {"ingrediente": "aceite", "cantidad": 40, "unidad": "ml"},
+      {"ingrediente": "sal", "cantidad": 2, "unidad": "g"}
+    ],
+    "preparacion": "1. Hierve la yuca hasta que esté muy suave. 2. Haz puré con la yuca y mezcla con huevo. 3. Forma bolitas y haz un hueco en el centro. 4. Rellena con queso y cierra bien. 5. Fríe en aceite caliente hasta dorar."
+  },
+  {
+    "id": 22,
+    "nombre": "Papa Rellena",
+    "tipo": "criolla",
+    "calorias": 350,
+    "categoria": "normal",
+    "componente": "entrada",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 2.62,
+    "ingredientes": [
+      {"ingrediente": "papa", "cantidad": 200, "unidad": "g"},
+      {"ingrediente": "carne molida", "cantidad": 60, "unidad": "g"},
+      {"ingrediente": "huevo duro", "cantidad": 1, "unidad": "unidad"},
+      {"ingrediente": "cebolla", "cantidad": 30, "unidad": "g"},
+      {"ingrediente": "aceite", "cantidad": 50, "unidad": "ml"}
+    ],
+    "preparacion": "1. Hierve las papas hasta que estén muy suaves, pela y haz puré. 2. Sofríe la cebolla picada y agrega la carne molida hasta dorar. 3. Agrega el huevo duro picado al guiso y sazona con sal. 4. Forma bolas de puré, haz un hueco y rellena con el guiso. 5. Cierra bien las bolas y fríe en aceite caliente hasta dorar."
+  },
+  {
+    "id": 23,
+    "nombre": "Causa Limeña",
+    "tipo": "criolla",
+    "calorias": 420,
+    "categoria": "normal",
+    "componente": "entrada",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 3.44,
+    "ingredientes": [
+      {"ingrediente": "papa amarilla", "cantidad": 180, "unidad": "g"},
+      {"ingrediente": "ají amarillo", "cantidad": 15, "unidad": "g"},
+      {"ingrediente": "pollo", "cantidad": 80, "unidad": "g"},
+      {"ingrediente": "palta", "cantidad": 50, "unidad": "g"},
+      {"ingrediente": "mayonesa", "cantidad": 20, "unidad": "g"}
+    ],
+    "preparacion": "1. Hierve las papas amarillas hasta que estén muy suaves. 2. Pela y haz puré, mezcla con ají amarillo molido. 3. Cocina el pollo, desmenuza y mezcla con mayonesa. 4. En un molde, coloca una capa de puré de papa. 5. Agrega el pollo y palta, termina con otra capa de papa y desmolda."
+  },
+  {
+    "id": 24,
+    "nombre": "Anticuchos",
+    "tipo": "criolla",
+    "calorias": 380,
+    "categoria": "normal",
+    "componente": "entrada",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 1.92,
+    "ingredientes": [
+      {"ingrediente": "corazón de res", "cantidad": 120, "unidad": "g"},
+      {"ingrediente": "ají panca", "cantidad": 15, "unidad": "g"},
+      {"ingrediente": "vinagre", "cantidad": 10, "unidad": "ml"},
+      {"ingrediente": "comino", "cantidad": 2, "unidad": "g"},
+      {"ingrediente": "ajo", "cantidad": 8, "unidad": "g"}
+    ],
+    "preparacion": "1. Corta el corazón en trozos medianos. 2. Prepara una marinada con ají panca molido, vinagre, comino y ajo. 3. Marina la carne por al menos 2 horas. 4. Ensarta los trozos en palitos de anticucho. 5. Asa a la parrilla volteando constantemente hasta dorar."
+  },
+  {
+    "id": 25,
+    "nombre": "Choritos a la Chalaca",
+    "tipo": "marina",
+    "calorias": 180,
+    "categoria": "normal",
+    "componente": "entrada",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 2.15,
+    "ingredientes": [
+      {"ingrediente": "mejillones", "cantidad": 100, "unidad": "g"},
+      {"ingrediente": "cebolla", "cantidad": 40, "unidad": "g"},
+      {"ingrediente": "tomate", "cantidad": 30, "unidad": "g"},
+      {"ingrediente": "choclo", "cantidad": 30, "unidad": "g"},
+      {"ingrediente": "limón", "cantidad": 20, "unidad": "g"}
+    ],
+    "preparacion": "1. Hierve los mejillones hasta que se abran. 2. Pica finamente cebolla, tomate y choclo cocido. 3. Mezcla las verduras con limón y sal. 4. Coloca la mezcla sobre cada mejillón. 5. Sirve frío como entrada."
+  },
+  {
+    "id": 26,
+    "nombre": "Leche de Tigre",
+    "tipo": "marina",
+    "calorias": 120,
+    "categoria": "normal",
+    "componente": "entrada",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 2.45,
+    "ingredientes": [
+      {"ingrediente": "pescado", "cantidad": 80, "unidad": "g"},
+      {"ingrediente": "limón", "cantidad": 60, "unidad": "g"},
+      {"ingrediente": "apio", "cantidad": 20, "unidad": "g"},
+      {"ingrediente": "jengibre", "cantidad": 10, "unidad": "g"},
+      {"ingrediente": "ají limo", "cantidad": 5, "unidad": "g"}
+    ],
+    "preparacion": "1. Licua el pescado con limón, apio y jengibre. 2. Cuela la mezcla para obtener solo el líquido. 3. Agrega ají limo picado finamente. 4. Sazona con sal y pimienta. 5. Sirve bien frío en copas pequeñas."
+  },
+  {
+    "id": 27,
+    "nombre": "Ceviche de Pescado",
+    "tipo": "marina",
+    "calorias": 220,
+    "categoria": "normal",
+    "componente": "entrada",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 2.64,
+    "ingredientes": [
+      {"ingrediente": "pescado", "cantidad": 120, "unidad": "g"},
+      {"ingrediente": "limón", "cantidad": 60, "unidad": "g"},
+      {"ingrediente": "cebolla", "cantidad": 50, "unidad": "g"},
+      {"ingrediente": "ají limo", "cantidad": 8, "unidad": "g"},
+      {"ingrediente": "sal", "cantidad": 3, "unidad": "g"}
+    ],
+    "preparacion": "1. Corta el pescado fresco en cubos de 2cm aproximadamente. 2. Corta la cebolla en juliana fina y remoja en agua fría. 3. Exprime los limones hasta obtener 60ml de jugo fresco. 4. Mezcla el pescado con sal y jugo de limón, deja marinar 10 minutos. 5. Escurre la cebolla, agrega al pescado con ají limo picado y sirve."
+  },
+  {
+    "id": 28,
+    "nombre": "Tiradito",
+    "tipo": "marina",
+    "calorias": 180,
+    "categoria": "normal",
+    "componente": "entrada",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 2.12,
+    "ingredientes": [
+      {"ingrediente": "pescado", "cantidad": 100, "unidad": "g"},
+      {"ingrediente": "ají amarillo", "cantidad": 12, "unidad": "g"},
+      {"ingrediente": "limón", "cantidad": 40, "unidad": "g"},
+      {"ingrediente": "apio", "cantidad": 15, "unidad": "g"},
+      {"ingrediente": "sal", "cantidad": 2, "unidad": "g"}
+    ],
+    "preparacion": "1. Corta el pescado en láminas muy finas con cuchillo afilado. 2. Acomoda las láminas en un plato frío. 3. Licua ají amarillo con limón y sal. 4. Vierte la crema de ají sobre el pescado. 5. Decora con apio finamente picado y sirve inmediatamente."
+  },
+  {
+    "id": 29,
+    "nombre": "Pachamanca a la Olla",
+    "tipo": "andina",
+    "calorias": 580,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 4.85,
+    "ingredientes": [
+      {"ingrediente": "pollo", "cantidad": 100, "unidad": "g"},
+      {"ingrediente": "cerdo", "cantidad": 80, "unidad": "g"},
+      {"ingrediente": "papa", "cantidad": 100, "unidad": "g"},
+      {"ingrediente": "camote", "cantidad": 80, "unidad": "g"},
+      {"ingrediente": "choclo", "cantidad": 50, "unidad": "g"}
+    ],
+    "preparacion": "1. Marina las carnes con ají panca y hierbas. 2. En una olla grande, coloca piedras calientes. 3. Acomoda capas de carnes y vegetales. 4. Tapa herméticamente con hojas de plátano. 5. Cocina a fuego bajo por 2 horas."
+  },
+  {
+    "id": 30,
+    "nombre": "Seco de Cabrito",
+    "tipo": "nortena",
+    "calorias": 620,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 5.25,
+    "ingredientes": [
+      {"ingrediente": "cabrito", "cantidad": 150, "unidad": "g"},
+      {"ingrediente": "chicha de jora", "cantidad": 100, "unidad": "ml"},
+      {"ingrediente": "culantro", "cantidad": 40, "unidad": "g"},
+      {"ingrediente": "cebolla", "cantidad": 50, "unidad": "g"},
+      {"ingrediente": "zapallo", "cantidad": 80, "unidad": "g"}
+    ],
+    "preparacion": "1. Corta el cabrito en trozos y dora en aceite. 2. Licua culantro con chicha de jora. 3. Sofríe cebolla y agrega la mezcla de culantro. 4. Incorpora el cabrito y cocina a fuego lento. 5. Agrega zapallo en trozos y cocina hasta que esté tierno."
+  },
+  {
+    "id": 31,
+    "nombre": "Juane",
+    "tipo": "selvatica",
+    "calorias": 480,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 3.95,
+    "ingredientes": [
+      {"ingrediente": "arroz", "cantidad": 120, "unidad": "g"},
+      {"ingrediente": "gallina", "cantidad": 100, "unidad": "g"},
+      {"ingrediente": "huevo duro", "cantidad": 1, "unidad": "unidad"},
+      {"ingrediente": "aceitunas", "cantidad": 20, "unidad": "g"},
+      {"ingrediente": "bijao", "cantidad": 2, "unidad": "g"}
+    ],
+    "preparacion": "1. Cocina arroz con caldo de gallina y culantro. 2. Desmenuza la gallina cocida. 3. Mezcla arroz, gallina, huevo picado y aceitunas. 4. Envuelve porciones en hojas de bijao. 5. Cocina al vapor por 45 minutos."
+  },
+  {
+    "id": 32,
+    "nombre": "Tacacho con Cecina",
+    "tipo": "selvatica",
+    "calorias": 520,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 4.65,
+    "ingredientes": [
+      {"ingrediente": "plátano verde", "cantidad": 150, "unidad": "g"},
+      {"ingrediente": "cecina", "cantidad": 100, "unidad": "g"},
+      {"ingrediente": "manteca", "cantidad": 20, "unidad": "g"},
+      {"ingrediente": "ajo", "cantidad": 5, "unidad": "g"},
+      {"ingrediente": "sal", "cantidad": 3, "unidad": "g"}
+    ],
+    "preparacion": "1. Hierve los plátanos verdes con cáscara. 2. Pela y machaca con manteca y sal. 3. Forma bolas con el puré de plátano. 4. Asa la cecina a la parrilla. 5. Sirve el tacacho con la cecina asada."
+  },
+  {
+    "id": 33,
+    "nombre": "Olluquito con Charqui",
+    "tipo": "andina",
+    "calorias": 450,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 5.95,
+    "ingredientes": [
+      {"ingrediente": "olluco", "cantidad": 150, "unidad": "g"},
+      {"ingrediente": "charqui", "cantidad": 80, "unidad": "g"},
+      {"ingrediente": "ají amarillo", "cantidad": 15, "unidad": "g"},
+      {"ingrediente": "cebolla", "cantidad": 40, "unidad": "g"},
+      {"ingrediente": "ajo", "cantidad": 5, "unidad": "g"}
+    ],
+    "preparacion": "1. Corta el olluco en tiras y blanquea. 2. Deshilacha el charqui previamente remojado. 3. Sofríe cebolla, ajo y ají amarillo. 4. Agrega el charqui y luego el olluco. 5. Cocina hasta que el olluco esté tierno."
+  },
+  {
+    "id": 34,
+    "nombre": "Carapulcra",
+    "tipo": "criolla",
+    "calorias": 480,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 3.75,
+    "ingredientes": [
+      {"ingrediente": "papa seca", "cantidad": 100, "unidad": "g"},
+      {"ingrediente": "cerdo", "cantidad": 100, "unidad": "g"},
+      {"ingrediente": "ají panca", "cantidad": 20, "unidad": "g"},
+      {"ingrediente": "maní", "cantidad": 30, "unidad": "g"},
+      {"ingrediente": "chocolate", "cantidad": 10, "unidad": "g"}
+    ],
+    "preparacion": "1. Remoja la papa seca y tuesta ligeramente. 2. Dora el cerdo en trozos. 3. Sofríe ají panca con especias. 4. Agrega las papas, cerdo y caldo. 5. Incorpora maní molido y chocolate, cocina hasta espesar."
+  },
+  {
+    "id": 35,
+    "nombre": "Chaufa de Mariscos",
+    "tipo": "china",
+    "calorias": 620,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 5.85,
+    "ingredientes": [
+      {"ingrediente": "arroz", "cantidad": 150, "unidad": "g"},
+      {"ingrediente": "langostinos", "cantidad": 60, "unidad": "g"},
+      {"ingrediente": "calamar", "cantidad": 60, "unidad": "g"},
+      {"ingrediente": "cebolla china", "cantidad": 30, "unidad": "g"},
+      {"ingrediente": "sillao", "cantidad": 20, "unidad": "ml"}
+    ],
+    "preparacion": "1. Usa arroz cocido del día anterior. 2. Saltea los mariscos en wok caliente. 3. Retira y en el mismo wok saltea el arroz. 4. Agrega sillao y mezcla bien. 5. Incorpora mariscos y cebolla china picada."
+  },
+  {
+    "id": 36,
+    "nombre": "Pollo a la Brasa",
+    "tipo": "criolla",
+    "calorias": 550,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 3.25,
+    "ingredientes": [
+      {"ingrediente": "pollo", "cantidad": 200, "unidad": "g"},
+      {"ingrediente": "ají panca", "cantidad": 15, "unidad": "g"},
+      {"ingrediente": "cerveza", "cantidad": 50, "unidad": "ml"},
+      {"ingrediente": "ajo", "cantidad": 10, "unidad": "g"},
+      {"ingrediente": "comino", "cantidad": 3, "unidad": "g"}
+    ],
+    "preparacion": "1. Marina el pollo con ají panca, ajo y cerveza. 2. Deja reposar mínimo 2 horas. 3. Precalienta el horno a 200°C. 4. Hornea el pollo por 45 minutos. 5. Voltea cada 15 minutos para dorar parejo."
+  },
+  {
+    "id": 37,
+    "nombre": "Arroz Chaufa de Pollo",
+    "tipo": "china",
+    "calorias": 650,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 2.75,
+    "ingredientes": [
+      {"ingrediente": "arroz", "cantidad": 150, "unidad": "g"},
+      {"ingrediente": "pollo", "cantidad": 120, "unidad": "g"},
+      {"ingrediente": "huevos", "cantidad": 2, "unidad": "unidad"},
+      {"ingrediente": "cebolla china", "cantidad": 30, "unidad": "g"},
+      {"ingrediente": "sillao", "cantidad": 20, "unidad": "ml"},
+      {"ingrediente": "aceite", "cantidad": 30, "unidad": "ml"}
+    ],
+    "preparacion": "1. Cocina el arroz el día anterior y déjalo en la refrigeradora. 2. Corta el pollo en trozos pequeños y salpimienta. 3. Calienta aceite en un wok, fríe el pollo hasta dorar y retira. 4. En el mismo wok, bate y cocina los huevos revueltos, retira. 5. Saltea el arroz frío con sillao, agrega pollo, huevos y cebolla china picada."
+  },
+  {
+    "id": 38,
+    "nombre": "Tallarín Saltado",
+    "tipo": "china",
+    "calorias": 720,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 3.29,
+    "ingredientes": [
+      {"ingrediente": "tallarines", "cantidad": 120, "unidad": "g"},
+      {"ingrediente": "carne", "cantidad": 100, "unidad": "g"},
+      {"ingrediente": "cebolla", "cantidad": 60, "unidad": "g"},
+      {"ingrediente": "tomate", "cantidad": 80, "unidad": "g"},
+      {"ingrediente": "sillao", "cantidad": 15, "unidad": "ml"},
+      {"ingrediente": "aceite", "cantidad": 25, "unidad": "ml"}
+    ],
+    "preparacion": "1. Cocina los tallarines en agua hirviendo con sal hasta que estén al dente. 2. Escurre y reserva los tallarines cocidos. 3. Corta la carne en tiras y la cebolla en gajos grandes. 4. En un wok caliente, saltea la carne a fuego alto por 3 minutos. 5. Agrega cebolla, tomate y tallarines, mezcla con sillao y saltea 2 minutos más."
+  },
+  {
+    "id": 39,
+    "nombre": "Rocoto Relleno",
+    "tipo": "andina",
+    "calorias": 420,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 3.15,
+    "ingredientes": [
+      {"ingrediente": "rocoto", "cantidad": 2, "unidad": "unidad"},
+      {"ingrediente": "carne molida", "cantidad": 100, "unidad": "g"},
+      {"ingrediente": "queso", "cantidad": 40, "unidad": "g"},
+      {"ingrediente": "maní", "cantidad": 20, "unidad": "g"},
+      {"ingrediente": "leche", "cantidad": 100, "unidad": "ml"}
+    ],
+    "preparacion": "1. Limpia los rocotos y hierve 3 veces cambiando el agua. 2. Sofríe la carne con cebolla y especias. 3. Agrega maní molido y pasas al relleno. 4. Rellena los rocotos y cubre con queso. 5. Hornea con un poco de leche por 30 minutos."
+  },
+  {
+    "id": 40,
+    "nombre": "Adobo Arequipeño",
+    "tipo": "andina",
+    "calorias": 520,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 3.85,
+    "ingredientes": [
+      {"ingrediente": "cerdo", "cantidad": 150, "unidad": "g"},
+      {"ingrediente": "ají panca", "cantidad": 30, "unidad": "g"},
+      {"ingrediente": "chicha de jora", "cantidad": 150, "unidad": "ml"},
+      {"ingrediente": "cebolla", "cantidad": 60, "unidad": "g"},
+      {"ingrediente": "ajo", "cantidad": 10, "unidad": "g"}
+    ],
+    "preparacion": "1. Marina el cerdo con ají panca y especias toda la noche. 2. Dora el cerdo en una olla. 3. Agrega la chicha y cebolla en gajos. 4. Cocina a fuego lento por 1 hora. 5. El líquido debe reducir hasta formar una salsa espesa."
+  },
+  {
+    "id": 41,
+    "nombre": "Lomo Saltado",
+    "tipo": "criolla",
+    "calorias": 680,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 7.01,
+    "ingredientes": [
+      {"ingrediente": "lomo", "cantidad": 150, "unidad": "g"},
+      {"ingrediente": "cebolla", "cantidad": 80, "unidad": "g"},
+      {"ingrediente": "tomate", "cantidad": 100, "unidad": "g"},
+      {"ingrediente": "papa", "cantidad": 200, "unidad": "g"},
+      {"ingrediente": "sillao", "cantidad": 15, "unidad": "ml"},
+      {"ingrediente": "aceite", "cantidad": 40, "unidad": "ml"}
+    ],
+    "preparacion": "1. Corta el lomo en tiras gruesas y sazona con sal y pimienta. 2. Pela y corta las papas en bastones, fríe hasta dorar. 3. Corta la cebolla en gajos y el tomate en gajos grandes. 4. En un wok caliente con aceite, sella el lomo a fuego alto por 2 minutos. 5. Agrega cebolla, tomate y sillao, saltea 3 minutos y sirve con papas fritas."
+  },
+  {
+    "id": 42,
+    "nombre": "Ají de Gallina",
+    "tipo": "criolla",
+    "calorias": 620,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 3.78,
+    "ingredientes": [
+      {"ingrediente": "gallina", "cantidad": 150, "unidad": "g"},
+      {"ingrediente": "ají amarillo", "cantidad": 40, "unidad": "g"},
+      {"ingrediente": "pan", "cantidad": 50, "unidad": "g"},
+      {"ingrediente": "leche", "cantidad": 200, "unidad": "ml"},
+      {"ingrediente": "queso", "cantidad": 30, "unidad": "g"},
+      {"ingrediente": "cebolla", "cantidad": 50, "unidad": "g"}
+    ],
+    "preparacion": "1. Hierve la gallina con sal hasta que esté tierna, desmenuza la carne. 2. Remoja el pan en leche tibia hasta que se ablande. 3. Licua el ají amarillo sin pepas con un poco de caldo de gallina. 4. Sofríe cebolla picada, agrega el ají licuado y cocina 5 minutos. 5. Agrega el pan remojado, gallina desmezuda, queso rallado y rectifica sazón."
+  },
+  {
+    "id": 43,
+    "nombre": "Arroz con Pollo",
+    "tipo": "criolla",
+    "calorias": 580,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 2.55,
+    "ingredientes": [
+      {"ingrediente": "arroz", "cantidad": 150, "unidad": "g"},
+      {"ingrediente": "pollo", "cantidad": 120, "unidad": "g"},
+      {"ingrediente": "culantro", "cantidad": 30, "unidad": "g"},
+      {"ingrediente": "arvejas", "cantidad": 40, "unidad": "g"},
+      {"ingrediente": "zanahoria", "cantidad": 50, "unidad": "g"},
+      {"ingrediente": "cebolla", "cantidad": 40, "unidad": "g"}
+    ],
+    "preparacion": "1. Corta el pollo en presas y dora en aceite caliente hasta sellar. 2. Retira el pollo y en el mismo aceite sofríe cebolla picada. 3. Licua el culantro con un poco de agua y agrégalo al sofrito. 4. Agrega el arroz y mezcla bien, luego las verduras picadas. 5. Incorpora el pollo, agrega agua caliente, tapa y cocina 20 minutos a fuego bajo."
+  },
+  {
+    "id": 44,
+    "nombre": "Cau Cau",
+    "tipo": "criolla",
+    "calorias": 380,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 2.45,
+    "ingredientes": [
+      {"ingrediente": "mondongo", "cantidad": 120, "unidad": "g"},
+      {"ingrediente": "papa", "cantidad": 150, "unidad": "g"},
+      {"ingrediente": "ají amarillo", "cantidad": 20, "unidad": "g"},
+      {"ingrediente": "hierbabuena", "cantidad": 10, "unidad": "g"},
+      {"ingrediente": "cebolla", "cantidad": 40, "unidad": "g"}
+    ],
+    "preparacion": "1. Hierve el mondongo hasta que esté tierno y córtalo en cuadros. 2. Corta las papas en cubos medianos. 3. Sofríe cebolla con ají amarillo molido. 4. Agrega el mondongo y las papas al sofrito. 5. Cocina con caldo, agrega hierbabuena picada al final."
+  },
+  {
+    "id": 45,
+    "nombre": "Seco de Chivo",
+    "tipo": "nortena",
+    "calorias": 580,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 5.15,
+    "ingredientes": [
+      {"ingrediente": "chivo", "cantidad": 150, "unidad": "g"},
+      {"ingrediente": "chicha de jora", "cantidad": 100, "unidad": "ml"},
+      {"ingrediente": "culantro", "cantidad": 40, "unidad": "g"},
+      {"ingrediente": "yuca", "cantidad": 100, "unidad": "g"},
+      {"ingrediente": "ají amarillo", "cantidad": 15, "unidad": "g"}
+    ],
+    "preparacion": "1. Marina el chivo con especias y ají. 2. Dora la carne en una olla gruesa. 3. Licua culantro con chicha de jora. 4. Agrega la mezcla a la carne y cocina lentamente. 5. Añade yuca en trozos 30 minutos antes de terminar."
+  },
+  {
+    "id": 46,
+    "nombre": "Arroz con Mariscos",
+    "tipo": "marina",
+    "calorias": 680,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 7.78,
+    "ingredientes": [
+      {"ingrediente": "arroz", "cantidad": 150, "unidad": "g"},
+      {"ingrediente": "langostinos", "cantidad": 100, "unidad": "g"},
+      {"ingrediente": "pulpo", "cantidad": 80, "unidad": "g"},
+      {"ingrediente": "mejillones", "cantidad": 60, "unidad": "g"},
+      {"ingrediente": "culantro", "cantidad": 20, "unidad": "g"},
+      {"ingrediente": "ají amarillo", "cantidad": 15, "unidad": "g"}
+    ],
+    "preparacion": "1. Limpia todos los mariscos y córtalos en trozos medianos. 2. Saltea los mariscos en aceite caliente por 3 minutos. 3. Retira los mariscos y en el mismo aceite sofríe ají amarillo. 4. Agrega el arroz y mezcla bien con el sofrito. 5. Incorpora caldo caliente, mariscos y culantro, cocina 20 minutos."
+  },
+  {
+    "id": 47,
+    "nombre": "Pescado a la Chorrillana",
+    "tipo": "marina",
+    "calorias": 520,
+    "categoria": "normal",
+    "componente": "fondo",
+    "momento_dia": ["almuerzo", "cena"],
+    "precio": 2.90,
+    "ingredientes": [
+      {"ingrediente": "pescado", "cantidad": 150, "unidad": "g"},
+      {"ingrediente": "cebolla", "cantidad": 80, "unidad": "g"},
+      {"ingrediente": "tomate", "cantidad": 60, "unidad": "g"},
+      {"ingrediente": "ají amarillo", "cantidad": 10, "unidad": "g"},
+      {"ingrediente": "aceite", "cantidad": 30, "unidad": "ml"}
+    ],
+    "preparacion": "1. Corta el pescado en filetes y sazona con sal y pimienta. 2. Fríe el pescado en aceite caliente hasta dorar por ambos lados. 3. Retira el pescado y en el mismo aceite sofríe cebolla en juliana. 4. Agrega tomate picado y ají amarillo molido, cocina 5 minutos. 5. Vierte la salsa caliente sobre el pescado y sirve inmediatamente."
+  }
+]

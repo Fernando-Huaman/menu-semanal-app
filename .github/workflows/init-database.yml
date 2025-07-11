@@ -1,0 +1,34 @@
+name: Initialize Database
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "yes" to confirm database initialization'
+        required: true
+
+jobs:
+  init-db:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.confirm == 'yes'
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        pip install cassandra-driver
+    
+    - name: Initialize database
+      env:
+        KEYSPACES_USER: ${{ secrets.KEYSPACES_USER }}
+        KEYSPACES_PASSWORD: ${{ secrets.KEYSPACES_PASSWORD }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+      run: |
+        cd scripts
+        python init-database.py
