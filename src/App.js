@@ -1,176 +1,134 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
-import ConfigTab from './components/ConfigTab';
-import PreparacionTab from './components/PreparacionTab';
-import ComprasTab from './components/ComprasTab';
-import api from './services/api';
-import storage from './services/storage';
-import { ShoppingCart, Utensils, Settings } from 'lucide-react';
+import { IonApp, IonRouterOutlet, setupIonicReact, IonLoading, IonAlert } from '@ionic/react';
+import { IonReactRouter } from '@ionic/react-router';
+import { Route } from 'react-router-dom';
+import MenuDisplay from './components/MenuDisplay';
 
-function App() {
-  // Estados principales
-  const [activeTab, setActiveTab] = useState('configuracion');
-  const [presupuesto, setPresupuesto] = useState(200);
-  const [preferencias, setPreferencias] = useState([]);
-  const [preferenciasCategoria, setPreferenciasCategoria] = useState([]);
-  const [menuGenerado, setMenuGenerado] = useState(null);
-  const [listaCompras, setListaCompras] = useState({});
-  const [itemsComprados, setItemsComprados] = useState({});
-  const [loading, setLoading] = useState(false);
+/* Core CSS required for Ionic components to work properly */
+import '@ionic/react/css/core.css';
+import '@ionic/react/css/normalize.css';
+import '@ionic/react/css/structure.css';
+import '@ionic/react/css/typography.css';
+
+/* Optional CSS utils that can be commented out */
+import '@ionic/react/css/padding.css';
+import '@ionic/react/css/float-elements.css';
+import '@ionic/react/css/text-alignment.css';
+import '@ionic/react/css/text-transformation.css';
+import '@ionic/react/css/flex-utils.css';
+import '@ionic/react/css/display.css';
+
+/* Theme variables */
+import './App.css';
+
+setupIonicReact();
+
+// Error Boundary Component
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null, errorInfo: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('Error caught by boundary:', error, errorInfo);
+    this.setState({
+      error: error,
+      errorInfo: errorInfo
+    });
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '20px', textAlign: 'center' }}>
+          <h2>Algo salió mal 😕</h2>
+          <details style={{ whiteSpace: 'pre-wrap', textAlign: 'left' }}>
+            <summary>Detalles del error</summary>
+            {this.state.error && this.state.error.toString()}
+            <br />
+            {this.state.errorInfo && this.state.errorInfo.componentStack}
+          </details>
+          <button onClick={() => window.location.reload()}>
+            Recargar App
+          </button>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+const App = () => {
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Cargar datos guardados al iniciar
   useEffect(() => {
-    const datosGuardados = storage.cargarMenu();
-    if (datosGuardados) {
-      setMenuGenerado(datosGuardados.menu);
-      setListaCompras(datosGuardados.listaCompras);
-    }
+    // Verificar configuración
+    const checkConfig = async () => {
+      try {
+        console.log('🚀 App iniciando...');
+        console.log('📡 API URL:', process.env.REACT_APP_API_URL || 'NO CONFIGURADA');
+        
+        // Simular carga inicial
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        setLoading(false);
+      } catch (err) {
+        console.error('Error en inicio:', err);
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    checkConfig();
   }, []);
 
-  // Handlers
-  const handlePreferenciaToggle = (tipo) => {
-    setPreferencias(prev => 
-      prev.includes(tipo) 
-        ? prev.filter(p => p !== tipo)
-        : [...prev, tipo]
+  if (loading) {
+    return (
+      <IonApp>
+        <IonLoading
+          isOpen={loading}
+          message={'Cargando Menu Semanal...'}
+        />
+      </IonApp>
     );
-  };
+  }
 
-  const handleCategoriaToggle = (categoria) => {
-    setPreferenciasCategoria(prev => 
-      prev.includes(categoria) 
-        ? prev.filter(p => p !== categoria)
-        : [...prev, categoria]
+  if (error) {
+    return (
+      <IonApp>
+        <IonAlert
+          isOpen={true}
+          header={'Error de Configuración'}
+          message={error}
+          buttons={['OK']}
+        />
+      </IonApp>
     );
-  };
-
-  const toggleItemComprado = (ingrediente) => {
-    setItemsComprados(prev => ({
-      ...prev,
-      [ingrediente]: !prev[ingrediente]
-    }));
-    
-    // Guardar estado de compras
-    storage.guardarEstadoCompras({
-      ...itemsComprados,
-      [ingrediente]: !itemsComprados[ingrediente]
-    });
-  };
-
-  const generarMenu = async () => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const resultado = await api.generarMenu(
-        presupuesto,
-        preferencias,
-        preferenciasCategoria
-      );
-      
-      setMenuGenerado({
-        platos: resultado.menu_semanal,
-        presupuestoTotal: resultado.presupuesto_total,
-        userId: resultado.user_id
-      });
-      
-      setListaCompras(resultado.lista_compras);
-      setItemsComprados({});
-      
-      // Guardar en localStorage
-      storage.guardarMenu({
-        menu: resultado.menu_semanal,
-        listaCompras: resultado.lista_compras,
-        presupuestoTotal: resultado.presupuesto_total
-      });
-      
-      // Cambiar a pestaña de preparación
-      setActiveTab('preparacion');
-      
-    } catch (err) {
-      setError(err.message);
-      console.error('Error generando menú:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Componente TabButton
-  const TabButton = ({ id, icon: Icon, label, isActive, onClick }) => (
-    <button
-      onClick={onClick}
-      className={`tab-button ${isActive ? 'active' : ''}`}
-    >
-      <Icon size={20} />
-      <span>{label}</span>
-    </button>
-  );
+  }
 
   return (
-    <div className="app">
-      {/* Header */}
-      <header className="app-header">
-        <h1>Menú Semanal para 2</h1>
-        <p>Powered by ML & AWS</p>
-      </header>
-
-      {/* Tab Navigation */}
-      <nav className="tab-navigation">
-        <TabButton
-          id="configuracion"
-          icon={Settings}
-          label="Configurar"
-          isActive={activeTab === 'configuracion'}
-          onClick={() => setActiveTab('configuracion')}
-        />
-        <TabButton
-          id="preparacion"
-          icon={Utensils}
-          label="Preparación"
-          isActive={activeTab === 'preparacion'}
-          onClick={() => setActiveTab('preparacion')}
-        />
-        <TabButton
-          id="compras"
-          icon={ShoppingCart}
-          label="Compras"
-          isActive={activeTab === 'compras'}
-          onClick={() => setActiveTab('compras')}
-        />
-      </nav>
-
-      {/* Content */}
-      <main className="app-content">
-        {activeTab === 'configuracion' && (
-          <ConfigTab
-            presupuesto={presupuesto}
-            setPresupuesto={setPresupuesto}
-            preferencias={preferencias}
-            handlePreferenciaToggle={handlePreferenciaToggle}
-            preferenciasCategoria={preferenciasCategoria}
-            handleCategoriaToggle={handleCategoriaToggle}
-            generarMenu={generarMenu}
-            loading={loading}
-            error={error}
-            menuGenerado={menuGenerado}
-          />
-        )}
-        
-        {activeTab === 'preparacion' && (
-          <PreparacionTab menuGenerado={menuGenerado} />
-        )}
-        
-        {activeTab === 'compras' && (
-          <ComprasTab
-            listaCompras={listaCompras}
-            itemsComprados={itemsComprados}
-            toggleItemComprado={toggleItemComprado}
-          />
-        )}
-      </main>
-    </div>
+    <IonApp>
+      <ErrorBoundary>
+        <IonReactRouter>
+          <IonRouterOutlet>
+            <Route exact path="/">
+              <MenuDisplay />
+            </Route>
+            <Route exact path="/menu">
+              <MenuDisplay />
+            </Route>
+          </IonRouterOutlet>
+        </IonReactRouter>
+      </ErrorBoundary>
+    </IonApp>
   );
-}
+};
 
 export default App;

@@ -29,13 +29,21 @@ jobs:
     
     - name: Build React app
       run: |
+        # Verificar variable de entorno
+        echo "🔧 API URL configurada: ${REACT_APP_API_URL:-NO CONFIGURADA}"
+        
         npm run build
+        
+        echo "📁 Verificando archivos del build:"
+        ls -la build/
+        echo "📊 Tamaño del build:"
+        du -sh build/
       env:
         REACT_APP_API_URL: ${{ secrets.LAMBDA_API_URL }}
     
     - name: Initialize Capacitor Android
       run: |
-        # Verificar que capacitor.config.json existe y tiene appId
+        # Verificar que capacitor.config.json existe
         if [ ! -f "capacitor.config.json" ]; then
           echo "Creating capacitor.config.json..."
           cat > capacitor.config.json << 'EOF'
@@ -45,7 +53,8 @@ jobs:
           "webDir": "build",
           "bundledWebRuntime": false,
           "server": {
-            "androidScheme": "https"
+            "androidScheme": "https",
+            "cleartext": true
           }
         }
         EOF
@@ -58,6 +67,28 @@ jobs:
         
         # Sync con Android
         npx cap sync android
+    
+    - name: Configure Android permissions
+      run: |
+        # Agregar permisos de Internet
+        MANIFEST_PATH="android/app/src/main/AndroidManifest.xml"
+        
+        if [ -f "$MANIFEST_PATH" ]; then
+          # Backup original
+          cp "$MANIFEST_PATH" "$MANIFEST_PATH.bak"
+          
+          # Agregar permiso de Internet
+          if ! grep -q "android.permission.INTERNET" "$MANIFEST_PATH"; then
+            sed -i '/<application/i \    <uses-permission android:name="android.permission.INTERNET" />' "$MANIFEST_PATH"
+          fi
+          
+          # Permitir tráfico HTTP para desarrollo
+          if ! grep -q "usesCleartextTraffic" "$MANIFEST_PATH"; then
+            sed -i 's/<application/<application android:usesCleartextTraffic="true"/' "$MANIFEST_PATH"
+          fi
+          
+          echo "📋 Permisos actualizados en AndroidManifest.xml"
+        fi
     
     - name: Setup Java
       uses: actions/setup-java@v3
@@ -90,7 +121,7 @@ jobs:
         MYAPP_RELEASE_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
         MYAPP_RELEASE_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
         
-        # Optimizaciones de build (sin MaxPermSize para Java 17)
+        # Optimizaciones de build
         org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
         org.gradle.parallel=true
         org.gradle.configureondemand=true
@@ -102,7 +133,7 @@ jobs:
       run: |
         cd android/app
         
-        # Agregar configuración de firma si no existe
+        # Agregar configuración de firma
         if ! grep -q "signingConfigs" build.gradle; then
           sed -i '/android {/a \
           signingConfigs {\
@@ -125,6 +156,17 @@ jobs:
         cd android
         chmod +x gradlew
         ./gradlew assembleRelease
+    
+    - name: Verify APK
+      run: |
+        APK_PATH="android/app/build/outputs/apk/release/app-release.apk"
+        if [ -f "$APK_PATH" ]; then
+          echo "✅ APK generado correctamente"
+          echo "📊 Tamaño: $(du -h $APK_PATH | cut -f1)"
+        else
+          echo "❌ APK no encontrado"
+          exit 1
+        fi
     
     - name: Upload APK
       uses: actions/upload-artifact@v4

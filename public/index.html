@@ -1,34 +1,36 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <meta name="theme-color" content="#dc2626" />
-  <meta name="description" content="Genera menús semanales personalizados con IA para 2 personas" />
-  <link rel="apple-touch-icon" href="%PUBLIC_URL%/icon-192.png" />
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-  
-  <!-- PWA meta tags -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Menú ML">
-  
-  <title>Menú Semanal ML</title>
-</head>
-<body>
-  <noscript>Necesitas habilitar JavaScript para usar esta aplicación.</noscript>
-  <div id="root"></div>
-  
-  <!-- Register Service Worker -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('%PUBLIC_URL%/service-worker.js')
-          .then(registration => console.log('SW registered:', registration))
-          .catch(error => console.log('SW registration failed:', error));
+  <head>
+    <meta charset="utf-8" />
+    <title>Menu Semanal</title>
+    <base href="/" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="viewport"
+      content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+
+    <link rel="icon" type="image/png" href="%PUBLIC_URL%/icon-192.png" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/icon-192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <script>
+      // Debug info
+      window.addEventListener('error', function(e) {
+        console.error('Global error:', e);
+        document.body.innerHTML = '<div style="padding:20px;color:red;">Error: ' + e.message + '</div>';
       });
-    }
-  </script>
-</body>
+    </script>
+  </head>
+
+  <body>
+    <div id="root">
+      <div style="padding:20px;text-align:center;">
+        <h3>Cargando Menu Semanal...</h3>
+        <p>Si ves este mensaje por más de 10 segundos, hay un problema.</p>
+      </div>
+    </div>
+  </body>
 </html>
