@@ -35,6 +35,22 @@ jobs:
     
     - name: Initialize Capacitor Android
       run: |
+        # Verificar que capacitor.config.json existe y tiene appId
+        if [ ! -f "capacitor.config.json" ]; then
+          echo "Creating capacitor.config.json..."
+          cat > capacitor.config.json << 'EOF'
+        {
+          "appId": "com.menuapp.semanal",
+          "appName": "Menu Semanal",
+          "webDir": "build",
+          "bundledWebRuntime": false,
+          "server": {
+            "androidScheme": "https"
+          }
+        }
+        EOF
+        fi
+        
         # Agregar Android si no existe
         if [ ! -d "android" ]; then
           npx cap add android
@@ -64,10 +80,21 @@ jobs:
       run: |
         cd android
         cat > gradle.properties << EOF
+        # Habilitar AndroidX (requerido)
+        android.useAndroidX=true
+        android.enableJetifier=true
+        
+        # Configuración del keystore
         MYAPP_RELEASE_STORE_FILE=release-keystore.jks
         MYAPP_RELEASE_KEY_ALIAS=${{ secrets.KEY_ALIAS }}
         MYAPP_RELEASE_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
         MYAPP_RELEASE_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
+        
+        # Optimizaciones de build
+        org.gradle.jvmargs=-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
+        org.gradle.parallel=true
+        org.gradle.configureondemand=true
+        org.gradle.caching=true
         EOF
     
     - name: Configure signing in build.gradle
