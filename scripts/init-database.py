@@ -8,6 +8,8 @@ import json
 import ssl
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
+from cassandra.policies import DCAwareRoundRobinPolicy
+from cassandra import ConsistencyLevel
 from datetime import datetime
 
 # Cargar datos
@@ -19,7 +21,7 @@ with open('../lambda/data/ingredientes.json', 'r', encoding='utf-8') as f:
 
 def connect_to_keyspaces():
     """Conecta a Amazon Keyspaces"""
-    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS)
     ssl_context.check_hostname = False
     ssl_context.verify_mode = ssl.CERT_NONE
     
@@ -33,10 +35,15 @@ def connect_to_keyspaces():
         port=9142,
         auth_provider=auth_provider,
         ssl_context=ssl_context,
-        protocol_version=4
+        protocol_version=4,
+        load_balancing_policy=DCAwareRoundRobinPolicy(local_dc=os.environ['AWS_REGION'])
     )
     
     session = cluster.connect('menu_semanal')
+    
+    # IMPORTANTE: Configurar el nivel de consistencia para Keyspaces
+    session.default_consistency_level = ConsistencyLevel.LOCAL_QUORUM
+    
     return cluster, session
 
 def insert_platos(session):
@@ -50,23 +57,28 @@ def insert_platos(session):
     """
     
     prepared = session.prepare(insert_query)
+    # Establecer consistencia para esta consulta específica
+    prepared.consistency_level = ConsistencyLevel.LOCAL_QUORUM
     
     for plato in PLATOS_DATA:
-        session.execute(prepared, [
-            plato['id'],
-            plato['nombre'],
-            plato['tipo'],
-            plato['categoria'],
-            plato['componente'],
-            plato['calorias'],
-            plato['precio'],
-            set(plato['momento_dia']),
-            json.dumps(plato['ingredientes']),
-            plato['preparacion']
-        ])
-        print(f"  ✓ {plato['nombre']}")
+        try:
+            session.execute(prepared, [
+                plato['id'],
+                plato['nombre'],
+                plato['tipo'],
+                plato['categoria'],
+                plato['componente'],
+                plato['calorias'],
+                plato['precio'],
+                set(plato['momento_dia']),
+                json.dumps(plato['ingredientes']),
+                plato['preparacion']
+            ])
+            print(f"  ✓ {plato['nombre']}")
+        except Exception as e:
+            print(f"  ✗ Error insertando {plato['nombre']}: {e}")
     
-    print(f"✅ {len(PLATOS_DATA)} platos insertados")
+    print(f"✅ {len(PLATOS_DATA)} platos procesados")
 
 def insert_ingredientes(session):
     """Inserta todos los ingredientes"""
@@ -78,28 +90,35 @@ def insert_ingredientes(session):
     """
     
     prepared = session.prepare(insert_query)
+    # Establecer consistencia para esta consulta específica
+    prepared.consistency_level = ConsistencyLevel.LOCAL_QUORUM
     
     count = 0
+    errors = 0
     for nombre, datos in INGREDIENTES_DATA.items():
-        session.execute(prepared, [
-            nombre,
-            datos['precio'],
-            datos['unidad'],
-            datos.get('ventaPor', datos['unidad']),
-            datos.get('precioVenta', datos['precio']),
-            datos['categoria']
-        ])
-        count += 1
-        if count % 10 == 0:
-            print(f"  ✓ {count} ingredientes...")
+        try:
+            session.execute(prepared, [
+                nombre,
+                datos['precio'],
+                datos['unidad'],
+                datos.get('ventaPor', datos['unidad']),
+                datos.get('precioVenta', datos['precio']),
+                datos['categoria']
+            ])
+            count += 1
+            if count % 10 == 0:
+                print(f"  ✓ {count} ingredientes...")
+        except Exception as e:
+            errors += 1
+            print(f"  ✗ Error insertando {nombre}: {e}")
     
-    print(f"✅ {count} ingredientes insertados")
+    print(f"✅ {count} ingredientes insertados, {errors} errores")
 
 def main():
     """Función principal"""
     print("🚀 Iniciando carga de datos en Amazon Keyspaces")
     print(f"   Region: {os.environ.get('AWS_REGION', 'us-east-1')}")
-    print(f"   Usuario: {os.environ.get('KEYSPACES_USER', 'No configurado')}")
+    print(f"   Usuario: {os.environ.get('KEYSPACES_USER', 'No configurado')[:20]}...")
     
     try:
         # Conectar
@@ -112,11 +131,12 @@ def main():
         
         # Insertar algunos datos de prueba
         print("\nInsertando datos de prueba...")
-        session.execute("""
+        test_query = """
             INSERT INTO modelo_entrenamiento (id, presupuesto, tipo_comida, 
                                             categoria, platos_seleccionados, satisfaccion)
             VALUES (uuid(), 200, 'criolla', 'normal', '[]', 85)
-        """)
+        """
+        session.execute(test_query, consistency_level=ConsistencyLevel.LOCAL_QUORUM)
         print("✅ Datos de prueba insertados")
         
         print("\n🎉 ¡Base de datos inicializada correctamente!")
