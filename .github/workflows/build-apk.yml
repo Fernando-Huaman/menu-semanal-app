@@ -3,101 +3,77 @@ name: Build Android APK
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'src/**'
-      - 'public/**'
-      - 'package.json'
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
 
 env:
   NODE_VERSION: '18'
-  JAVA_VERSION: '11'
 
 jobs:
-  build-apk:
+  build:
     runs-on: ubuntu-latest
     
     steps:
-    - name: 📥 Checkout código
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v3
     
-    - name: 🟢 Setup Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
     
-    - name: 📦 Install dependencies
+    - name: Install dependencies
       run: |
         npm ci
         npm install -g @capacitor/cli
     
-    - name: 🔧 Configure environment
+    - name: Build React app
       run: |
-        echo "REACT_APP_API_URL=${{ secrets.LAMBDA_API_URL }}" > .env
+        npm run build
+      env:
+        REACT_APP_API_URL: ${{ secrets.LAMBDA_API_URL }}
     
-    - name: 🏗️ Build React app
-      run: npm run build
-    
-    - name: ⚡ Setup Capacitor
+    - name: Sync Capacitor
       run: |
-        npx cap init "Menu Semanal ML" "com.menusemanal.app" --web-dir=build
-        npx cap add android
         npx cap sync android
     
-    - name: ☕ Setup Java
+    - name: Setup Java
       uses: actions/setup-java@v3
       with:
-        java-version: ${{ env.JAVA_VERSION }}
+        java-version: '17'
         distribution: 'temurin'
     
-    - name: 🤖 Setup Android SDK
+    - name: Setup Android SDK
       uses: android-actions/setup-android@v2
     
-    - name: 🔐 Decode Keystore
+    - name: Decode Keystore
       run: |
-        echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/keystore.jks
+        echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/release-keystore.jks
     
-    - name: 📝 Configure Gradle
+    - name: Build APK
       run: |
         cd android
-        echo "MYAPP_RELEASE_STORE_FILE=keystore.jks" >> gradle.properties
-        echo "MYAPP_RELEASE_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> gradle.properties
-        echo "MYAPP_RELEASE_KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> gradle.properties
-        echo "MYAPP_RELEASE_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> gradle.properties
-    
-    - name: 🔨 Build APK
-      run: |
-        cd android
-        chmod +x ./gradlew
         ./gradlew assembleRelease
+      env:
+        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
     
-    - name: 📤 Upload APK
-      uses: actions/upload-artifact@v3
+    - name: Upload APK
+      uses: actions/upload-artifact@v4  # ⬅️ CAMBIAR AQUÍ DE v3 a v4
       with:
         name: menu-semanal-ml
         path: android/app/build/outputs/apk/release/app-release.apk
+        retention-days: 30
     
-    - name: 🎉 Create Release
-      if: startsWith(github.ref, 'refs/tags/v')
-      uses: softprops/action-gh-release@v1
-      with:
-        files: android/app/build/outputs/apk/release/app-release.apk
-        title: "Menú Semanal ML ${{ github.ref_name }}"
-        body: |
-          ## 📱 Nueva versión disponible
-          
-          ### ✨ Características:
-          - Generación de menús con Machine Learning
-          - Optimizado para 2 personas
-          - Lista de compras inteligente
-          - Funciona sin conexión
-          
-          ### 📥 Instalación:
-          1. Descarga el archivo APK
-          2. En tu Android, ve a Configuración → Seguridad
-          3. Habilita "Fuentes desconocidas" o "Instalar apps desconocidas"
-          4. Abre el archivo APK descargado
-          5. Sigue las instrucciones de instalación
+    - name: Create Release
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ github.run_number }}
+        release_name: Release ${{ github.run_number }}
+        draft: false
+        prerelease: false
