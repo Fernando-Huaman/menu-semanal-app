@@ -1,3 +1,4 @@
+import uuid
 import json
 import os
 from datetime import datetime
@@ -111,7 +112,7 @@ def generar_menu(params):
         
         # Obtener parámetros
         presupuesto = float(params.get('presupuesto', 200))
-        user_id = params.get('userId', 'default')
+        user_id = params.get('userId', str(uuid.uuid4()))
         preferencias_tipo = params.get('tipoComida', [])
         preferencias_categoria = params.get('categoria', [])
         
