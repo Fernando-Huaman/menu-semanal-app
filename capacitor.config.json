@@ -1,0 +1,15 @@
+{
+  "appId": "com.menuapp.semanal",
+  "appName": "Menu Semanal",
+  "webDir": "build",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "buildOptions": {
+      "keystorePath": "app/release-keystore.jks",
+      "keystoreAlias": "menuapp"
+    }
+  }
+}
