@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
 
 /* Core CSS required for Ionic components */
 import '@ionic/react/css/core.css';
@@ -20,6 +19,8 @@ import '@ionic/react/css/display.css';
 /* Custom theme */
 import './theme/custom.css';
 
+console.log('🚀 Iniciando React...');
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -27,4 +28,4 @@ root.render(
   </React.StrictMode>
 );
 
-reportWebVitals();
+console.log('✅ React montado');

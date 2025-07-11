@@ -17,8 +17,6 @@ import {
   IonList,
   IonButton,
   IonInput,
-  IonSelect,
-  IonSelectOption,
   IonCheckbox,
   IonLoading,
   IonToast,
@@ -30,8 +28,6 @@ import {
   IonFab,
   IonFabButton,
   IonRippleEffect,
-  IonSkeletonText,
-  IonThumbnail,
 } from '@ionic/react';
 import { 
   restaurant, 
@@ -47,10 +43,7 @@ import {
   cash,
   refresh,
   checkmarkCircle,
-  closeCircle,
-  time,
-  flame,
-  star
+  flame
 } from 'ionicons/icons';
 import { menuService } from '../services/api';
 import { saveMenu } from '../services/storage';
@@ -71,11 +64,11 @@ const MenuDisplay = () => {
   const [toastMessage, setToastMessage] = useState('');
 
   const tiposComidaOptions = [
-    { value: 'criolla', label: '🍽️ Criolla', color: 'primary' },
-    { value: 'marina', label: '🐟 Marina', color: 'secondary' },
-    { value: 'china', label: '🥢 Chifa', color: 'tertiary' },
-    { value: 'andina', label: '🏔️ Andina', color: 'success' },
-    { value: 'selvatica', label: '🌿 Selvática', color: 'warning' },
+    { value: 'criolla', label: '🍽️ Criolla' },
+    { value: 'marina', label: '🐟 Marina' },
+    { value: 'china', label: '🥢 Chifa' },
+    { value: 'andina', label: '🏔️ Andina' },
+    { value: 'selvatica', label: '🌿 Selvática' },
   ];
 
   const getMomentoIcon = (momento) => {
@@ -203,8 +196,7 @@ const MenuDisplay = () => {
                   {tiposComidaOptions.map(tipo => (
                     <IonChip
                       key={tipo.value}
-                      color={tipoComida.includes(tipo.value) ? tipo.color : 'medium'}
-                      outline={!tipoComida.includes(tipo.value)}
+                      className={tipoComida.includes(tipo.value) ? 'chip-selected' : ''}
                       onClick={() => {
                         setTipoComida(prev =>
                           prev.includes(tipo.value)
@@ -212,7 +204,6 @@ const MenuDisplay = () => {
                             : [...prev, tipo.value]
                         );
                       }}
-                      className="tipo-chip"
                     >
                       <IonLabel>{tipo.label}</IonLabel>
                       {tipoComida.includes(tipo.value) && (
