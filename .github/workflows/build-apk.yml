@@ -90,11 +90,12 @@ jobs:
         MYAPP_RELEASE_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
         MYAPP_RELEASE_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
         
-        # Optimizaciones de build
-        org.gradle.jvmargs=-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
+        # Optimizaciones de build (sin MaxPermSize para Java 17)
+        org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
         org.gradle.parallel=true
         org.gradle.configureondemand=true
         org.gradle.caching=true
+        org.gradle.daemon=true
         EOF
     
     - name: Configure signing in build.gradle
